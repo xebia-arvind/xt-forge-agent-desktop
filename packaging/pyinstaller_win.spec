@@ -24,18 +24,6 @@ a = Analysis(
     ],
     hiddenimports=[
         "keyring.backends.Windows",
-        # Phase 7.4 — the bootstrap module invokes `python -m playwright
-        # install chromium` on first launch. Playwright's pip package must
-        # be bundled inside the packaged app so `sys.executable -m playwright`
-        # works. PyInstaller doesn't auto-detect subprocess imports, so
-        # list every module explicitly.
-        "playwright",
-        "playwright.sync_api",
-        "playwright._impl",
-        "playwright.__main__",
-        # Bootstrap itself references PySide6.QtCore.QThread + Signal via
-        # PySide6.QtCore, already collected by the top-level PySide6 import.
-        "bootstrap",
     ],
     hookspath=[],
     hooksconfig={},

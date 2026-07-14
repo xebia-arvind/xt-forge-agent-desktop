@@ -26,12 +26,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
 
-      - name: Install playwright pip package
-        # Bundled inside the .exe so the first-launch bootstrap can invoke
-        # `python -m playwright install chromium`. Not a runtime dep of the
-        # desktop client itself, so it's not in pyproject.toml.
-        run: pip install "playwright>=1.44"
-
       - name: Build with PyInstaller
         run: pyinstaller packaging/pyinstaller_win.spec
 

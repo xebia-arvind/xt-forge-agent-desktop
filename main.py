@@ -117,19 +117,6 @@ def main() -> int:
     if qss:
         app.setStyleSheet(qss)
 
-    # Phase 7.4 — First-launch dependency bootstrap. Downloads Playwright's
-    # Chromium binary if it's missing so users don't need to run any
-    # terminal commands. No-op on subsequent launches (flag stored in
-    # QSettings; browsers land under %LOCALAPPDATA%\ms-playwright on
-    # Windows or ~/Library/Caches/ms-playwright on macOS).
-    try:
-        import bootstrap
-        bootstrap.ensure_dependencies()
-    except Exception as exc:  # noqa: BLE001 — bootstrap failure is never fatal
-        # Log to stderr; the app still launches so users can at least
-        # navigate the UI and retry from Setup.
-        print(f"[main] Bootstrap skipped: {exc}", file=sys.stderr)
-
     shell = AppShell()
     shell.start()
 

@@ -21,17 +21,17 @@ that surfaces what the backend already knows.
 | Requirement       | Minimum                                        |
 | ----------------- | ---------------------------------------------- |
 | Operating system  | Windows 10 (build 1809) or Windows 11 — 64-bit |
-| Disk space        | ~700 MB (200 MB installer + 500 MB Playwright) |
+| Disk space        | ~250 MB                                        |
 | RAM               | 4 GB                                           |
 | Network           | HTTPS access to your XT-Forge Django backend   |
-| Prerequisites     | **None** — Python + browsers auto-install      |
+| Prerequisites     | **None** — Python is bundled inside the `.exe` |
 
-Not required, and **do not install manually**:
+Not required:
 
-- Python — bundled inside the `.exe`
-- PySide6 / Qt — bundled
-- Playwright + Chromium — auto-downloaded on first launch (see below)
-- Node.js — used only by the backend; the desktop client never runs Node
+- Python / PySide6 / Qt — bundled inside the installer
+- Playwright / Chromium / Node.js — the desktop is a thin HTTP client;
+  browsers are used server-side by the Django backend, never on the
+  operator's machine. Tests run wherever qcluster runs.
 
 ## Install steps
 
@@ -50,19 +50,14 @@ Not required, and **do not install manually**:
 
 ## First launch
 
-1. On first launch, a dialog appears: **"Setting up XT-Forge for first use…"**
-   - This is the one-time Playwright Chromium download (~150 MB).
-   - It takes 30 seconds to 2 minutes depending on your connection.
-   - **Do not close the dialog.** If you close it, retry from the Windows
-     Start menu — the app resumes where it left off.
-2. Once the dialog closes, you'll see the **Setup** screen asking for a
-   backend URL. Enter your Django backend, e.g.:
-   - `http://127.0.0.1:8000` (local dev)
+1. The **Setup** screen asks for a backend URL. Enter your Django backend, e.g.:
+   - `http://127.0.0.1:8000` (local dev — only when Django runs on the same box)
+   - `http://<your-server-ip>:8000` (Django on the LAN)
    - `https://xt-forge.your-company.com` (production)
-3. Click **Continue**. The app tests the connection and remembers the URL.
-4. **Login screen**: enter your email, password, and workspace secret. Your
+2. Click **Continue**. The app tests the connection and remembers the URL.
+3. **Login screen**: enter your email, password, and workspace secret. Your
    admin provisions these in Django admin (`/admin/clients/users/`).
-5. Click **Sign in**. On success, you land on the **Jobs Dashboard** — the
+4. Click **Sign in**. On success, you land on the **Jobs Dashboard** — the
    same view as `http://<backend>/test-analytics/jobs/` in the browser.
 
 ## Daily use
@@ -83,7 +78,6 @@ way around the browser UI you already know your way around this one.
 | "Unverified publisher" warning on install     | Expected — the installer isn't code-signed. Click **More info** → **Run anyway**. Safe if you got the `.exe` from a trusted source. |
 | "Cannot connect to backend" on Setup screen   | Wrong URL, firewall, or VPN not connected. Verify by opening the URL in a browser first. |
 | "Login failed" on Login screen                | Your Django admin hasn't created a user for you, OR the workspace secret is wrong. Ask your admin. |
-| "Playwright setup did not complete"           | No internet during first launch, corporate proxy blocked the download, or the CDN was flaky. Restart the app — the bootstrap retries automatically. If it keeps failing, open a terminal from the install directory and run `XT-Forge.exe`; the logged error line usually points at the cause. |
 | App won't start after install                 | Check `%USERPROFILE%\AppData\Local\XT-Forge\logs\desktop-debug.log` for a traceback. Common cause: Windows Defender / EDR flagging PyInstaller-bundled `.exe`. Add an exception for `%LOCALAPPDATA%\Programs\XT-Forge\` in your antivirus. |
 | Job listing is empty                          | The backend may have zero jobs beyond STAGE_INTAKE — the desktop follows the same Phase 6.5.1 filter as the browser (hides intake stubs). Start a fresh pipeline from Worklist. |
 | Slow response times                           | Backend issue, not desktop. Check the backend health at `<backend-url>/admin/`. |
@@ -93,7 +87,6 @@ way around the browser UI you already know your way around this one.
 | Path                                                    | What's there                           |
 | ------------------------------------------------------- | -------------------------------------- |
 | `%LOCALAPPDATA%\Programs\XT-Forge\`                     | App binary + PyInstaller bundle        |
-| `%LOCALAPPDATA%\ms-playwright\chromium-*\`              | Playwright's Chromium (~150 MB)        |
 | `%APPDATA%\XTForge\XTForgeDesktop\`                     | QSettings (backend URL, last email)    |
 | `%LOCALAPPDATA%\XT-Forge\logs\desktop-debug.log`        | App log (open this when reporting bugs)|
 | Windows Credential Manager (`XTForgeDesktop-*`)         | JWT session tokens (auto-managed)      |
@@ -102,15 +95,13 @@ way around the browser UI you already know your way around this one.
 
 1. Uninstall the old version: **Settings → Apps → XT-Forge → Uninstall**.
 2. Download the new `XT-Forge-Setup.exe` and re-install.
-3. Your backend URL, last email, and Playwright Chromium install all
-   persist across upgrades — you don't need to re-enter them.
+3. Your backend URL and last email persist across upgrades — you don't
+   need to re-enter them.
 
 ## Uninstall
 
 1. **Settings → Apps → XT-Forge → Uninstall** removes the app binary.
-2. To also free the ~500 MB of Playwright browsers, manually delete
-   `%LOCALAPPDATA%\ms-playwright\`.
-3. To wipe saved credentials, delete the `XTForgeDesktop-*` entries in
+2. To wipe saved credentials, delete the `XTForgeDesktop-*` entries in
    Windows Credential Manager.
 
 ## Bug reports

@@ -7,7 +7,6 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QHeaderView,
-    QInputDialog,
     QLabel,
     QLineEdit,
     QMessageBox,
@@ -21,7 +20,6 @@ from PySide6.QtWidgets import (
 from api_client import APIClient, APIError
 
 _DEFAULT_JQL = "assignee=currentUser() ORDER BY created DESC"
-_BASE_URL_STATE_KEY = "_last_base_url"
 
 
 class WorklistPanel(QWidget):
@@ -33,7 +31,6 @@ class WorklistPanel(QWidget):
         super().__init__(parent)
         self.api = api
         self.setObjectName("worklistPanel")
-        self._last_base_url = ""  # remembered across Start pipeline clicks
         self._build_ui()
 
     def _build_ui(self) -> None:
@@ -109,35 +106,14 @@ class WorklistPanel(QWidget):
         self.table.resizeColumnToContents(3)
 
     def _start(self, jira_key: str, summary: str) -> None:
-        # Prompt for the site URL the Plan agent should crawl. Without this the
-        # backend defaults to http://localhost:3000, the crawl finds nothing,
-        # and the Plan stage returns empty scenarios.
-        default_url = self._last_base_url or "https://"
-        base_url, ok = QInputDialog.getText(
-            self,
-            f"Base URL for {jira_key}",
-            "Enter the site URL the pipeline should crawl for selectors\n"
-            "(e.g. https://staging.example.com/):",
-            QLineEdit.Normal,
-            default_url,
-        )
-        if not ok:
-            return
-        base_url = base_url.strip()
-        if not base_url or not (base_url.startswith("http://") or base_url.startswith("https://")):
-            QMessageBox.warning(
-                self,
-                "Base URL required",
-                "Enter a URL starting with http:// or https:// so the plan agent has something to crawl.",
-            )
-            return
-        self._last_base_url = base_url
-
+        # Mirror the browser Worklist behaviour: POST to /pipeline-jobs/ with
+        # just jira_issue_key + feature_name. The backend resolves the site
+        # URL from the tenant's ui_knowledge / client config — no client-side
+        # prompt needed, so operators don't have to remember/paste URLs.
         try:
             result = self.api.start_pipeline(
                 jira_key,
                 feature_name=summary or jira_key,
-                base_url=base_url,
             )
         except APIError as exc:
             QMessageBox.critical(self, "Start pipeline failed", str(exc))
