@@ -35,8 +35,19 @@ jobs:
       - name: Build with PyInstaller
         run: pyinstaller packaging/pyinstaller_win.spec
 
-      - name: Install Inno Setup
-        run: choco install innosetup --version=6.2.2 -y
+      # Inno Setup 6.x is pre-installed on windows-latest runners (currently
+      # v6.7.1). We only re-invoke `choco install` if `iscc.exe` isn't already
+      # on disk — pinning a specific version would trip the "newer version
+      # already installed" downgrade guard.
+      - name: Ensure Inno Setup is available
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup -y --no-progress
+          } else {
+            Write-Host "Inno Setup already installed at $iscc"
+          }
 
       - name: Package .exe installer
         run: |
