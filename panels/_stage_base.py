@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMessageBox,
+    QProgressBar,
     QPushButton,
     QScrollArea,
     QSizePolicy,
@@ -24,6 +25,7 @@ from PySide6.QtWidgets import (
 )
 
 from api_client import APIClient, APIError
+from workers.agent_run_thread import AgentRunThread
 
 
 class StagePanelBase(QWidget):
@@ -47,6 +49,10 @@ class StagePanelBase(QWidget):
         self.api = api
         self.job_id: Optional[str] = None
         self._last_payload: Any = None
+        # Phase 12.3 — reference to the in-flight AgentRunThread. Held so Qt
+        # doesn't GC the thread mid-run (that crashes). Also used to reject
+        # double-clicks on Run agent while a run is already in flight.
+        self._agent_thread: Optional[AgentRunThread] = None
         self._build_ui()
 
     # Subclasses override to point paintModelBadge at the right agent's
@@ -104,12 +110,54 @@ class StagePanelBase(QWidget):
         self.btn_row.addStretch(1)
         layout.addLayout(self.btn_row)
 
-    def _placeholder(self, text: str) -> QWidget:
-        w = QLabel(text)
-        w.setObjectName("hint")
-        w.setAlignment(Qt.AlignCenter)
-        w.setWordWrap(True)
-        return w
+        # Phase 12.3 — indeterminate progress bar under the button row.
+        # Hidden by default; shown while an AgentRunThread is in flight.
+        # Qt's own paint loop animates it (as long as the event loop isn't
+        # blocked — which is why the LLM call now runs on a worker thread).
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setObjectName("runProgress")
+        self.progress_bar.setMinimum(0)
+        self.progress_bar.setMaximum(0)   # indeterminate
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.setVisible(False)
+        layout.addWidget(self.progress_bar)
+
+    def _placeholder(self, text: str,
+                     icon: str = "✨",
+                     hint: str = "Click ▶ Run agent to invoke the LLM.") -> QWidget:
+        """
+        Phase 12.2 — prettified empty-state widget: an emoji icon, a bold
+        title line, and a subtle hint underneath, all centred with generous
+        vertical padding. Keeps the same single-string API so existing
+        callers pass their message unchanged; only the visual output changes.
+        Subclasses can supply a different icon/hint (e.g. "⏳" for the
+        "Working…" state used while the agent runs — see Phase 12.3).
+        """
+        container = QWidget()
+        v = QVBoxLayout(container)
+        v.setAlignment(Qt.AlignCenter)
+        v.setSpacing(8)
+
+        icon_lbl = QLabel(icon)
+        icon_lbl.setObjectName("emptyStateIcon")
+        icon_lbl.setAlignment(Qt.AlignCenter)
+
+        title_lbl = QLabel(text)
+        title_lbl.setObjectName("emptyStateTitle")
+        title_lbl.setAlignment(Qt.AlignCenter)
+        title_lbl.setWordWrap(True)
+
+        hint_lbl = QLabel(hint)
+        hint_lbl.setObjectName("emptyStateHint")
+        hint_lbl.setAlignment(Qt.AlignCenter)
+        hint_lbl.setWordWrap(True)
+
+        v.addStretch(1)
+        v.addWidget(icon_lbl)
+        v.addWidget(title_lbl)
+        v.addWidget(hint_lbl)
+        v.addStretch(1)
+        return container
 
     def _set_scroll_widget(self, widget: QWidget) -> None:
         self.scroll.setWidget(widget)
@@ -161,21 +209,27 @@ class StagePanelBase(QWidget):
             self.model_badge.setVisible(False)
 
     # ------------------------------------------------------------------
+    # Phase 12.3 — the previous _run() called api.run_stage synchronously on
+    # the Qt event loop; the 30-120 s HTTPS call froze the UI. Now the call
+    # runs on an AgentRunThread and the two _on_agent_* slots receive
+    # signals with the response or an error. The progress bar animates
+    # because the event loop is no longer blocked.
     def _run(self) -> None:
         if not self.job_id:
             QMessageBox.warning(self, "No job", "Start a pipeline from Worklist first.")
             return
-        self.run_btn.setEnabled(False)
-        self.run_btn.setText("Running…")
-        try:
-            result = self.api.run_stage(self.job_id, self.STAGE_KEY)
-        except APIError as exc:
-            QMessageBox.critical(self, "Agent failed", str(exc))
+        # Reject double-clicks while a run is already in flight.
+        if self._agent_thread is not None and self._agent_thread.isRunning():
             return
-        finally:
-            self.run_btn.setEnabled(True)
-            self.run_btn.setText("▶ Run agent")
 
+        self._set_running(True)
+        self._agent_thread = AgentRunThread(self.api, self.job_id, self.STAGE_KEY, parent=self)
+        self._agent_thread.succeeded.connect(self._on_agent_succeeded)
+        self._agent_thread.failed.connect(self._on_agent_failed)
+        self._agent_thread.finished.connect(lambda: self._set_running(False))
+        self._agent_thread.start()
+
+    def _on_agent_succeeded(self, result: Any) -> None:
         # Server returns {"stage": "...", "output": {...}} — unwrap.
         if isinstance(result, dict) and "output" in result and isinstance(result["output"], (dict, list)):
             payload = result["output"]
@@ -190,6 +244,31 @@ class StagePanelBase(QWidget):
             self._paint_model_badge(job)
         except APIError:
             pass
+
+    def _on_agent_failed(self, message: str) -> None:
+        QMessageBox.critical(self, "Agent failed", message)
+
+    def _set_running(self, running: bool) -> None:
+        """
+        Flip the panel between "run in progress" and "idle" states.
+        Disables the button, swaps its text, toggles the progress bar,
+        and shows a "Working…" placeholder in the scroll area while a
+        run is in flight.
+        """
+        self.run_btn.setEnabled(not running)
+        self.run_btn.setText("Running…" if running else "▶ Run agent")
+        self.progress_bar.setVisible(running)
+        if running:
+            self._set_scroll_widget(
+                self._placeholder(
+                    "Working…",
+                    icon="⏳",
+                    hint="The LLM agent is thinking. This can take 30-120 s.",
+                )
+            )
+        # When running=False, the succeeded/failed handler has already
+        # rendered new output (or an error dialog was shown); don't
+        # overwrite the scroll area here.
 
     def _approve(self) -> None:
         if not self.job_id:

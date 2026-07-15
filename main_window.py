@@ -146,6 +146,13 @@ class MainWindow(QMainWindow):
 
         # Wire the worklist → pipeline transition
         self._panels["worklist"].pipeline_started.connect(self._on_pipeline_started)
+        # Phase 14 — reuse the existing job-opened handler when the autopilot
+        # dialog finishes (either successfully on artifact review, or on
+        # a mid-chain failure that navigated back to that stage's panel).
+        if hasattr(self._panels["worklist"], "autopilot_finished"):
+            self._panels["worklist"].autopilot_finished.connect(
+                self._on_job_opened_from_dashboard
+            )
         for slug in ("feature", "manual_tests", "plan", "review"):
             self._panels[slug].approved.connect(self._advance_stage)
 

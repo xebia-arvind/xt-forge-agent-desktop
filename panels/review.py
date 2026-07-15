@@ -31,6 +31,7 @@ from PySide6.QtWidgets import (
 from api_client import APIError
 from panels._stage_base import StagePanelBase
 from panels._visuals import badge, bullet_list, card
+from workers.agent_run_thread import AgentRunThread
 
 
 class ReviewPanel(StagePanelBase):
@@ -100,19 +101,28 @@ class ReviewPanel(StagePanelBase):
         )
         if ok != QMessageBox.Yes:
             return
+        # Phase 12.4 — reuse the base class async runner. Extra visual cue
+        # on the Regenerate button; success/failure land in the same
+        # _on_agent_* slots as the primary Run agent path.
+        if self._agent_thread is not None and self._agent_thread.isRunning():
+            return
         self.regenerate_btn.setEnabled(False)
         self.regenerate_btn.setText("Regenerating…")
-        try:
-            self.api.run_stage(self.job_id, self.STAGE_KEY)
-        except APIError as exc:
-            QMessageBox.critical(self, "Regenerate failed", str(exc))
-            return
-        finally:
-            self.regenerate_btn.setEnabled(True)
-            self.regenerate_btn.setText("🔄 Regenerate artifacts")
-        # The /run/ response omits `artifacts` — re-fetch the job detail so
-        # the panel reflects newly-persisted rows.
+        self._set_running(True)
+        self._agent_thread = AgentRunThread(self.api, self.job_id, self.STAGE_KEY, parent=self)
+        self._agent_thread.succeeded.connect(self._on_regenerate_finished)
+        self._agent_thread.failed.connect(self._on_agent_failed)
+        self._agent_thread.finished.connect(self._on_regenerate_thread_finished)
+        self._agent_thread.start()
+
+    def _on_regenerate_finished(self, _result: Any) -> None:
+        # /run/ response omits `artifacts` — re-fetch job detail.
         self._try_hydrate()
+
+    def _on_regenerate_thread_finished(self) -> None:
+        self._set_running(False)
+        self.regenerate_btn.setEnabled(True)
+        self.regenerate_btn.setText("🔄 Regenerate artifacts")
 
     def _run(self) -> None:
         # The base class hands the /run/ response body ({stage,
@@ -123,17 +133,14 @@ class ReviewPanel(StagePanelBase):
         if not self.job_id:
             QMessageBox.warning(self, "No job", "Start a pipeline from Worklist first.")
             return
-        self.run_btn.setEnabled(False)
-        self.run_btn.setText("Running…")
-        try:
-            self.api.run_stage(self.job_id, self.STAGE_KEY)
-        except APIError as exc:
-            QMessageBox.critical(self, "Agent failed", str(exc))
+        if self._agent_thread is not None and self._agent_thread.isRunning():
             return
-        finally:
-            self.run_btn.setEnabled(True)
-            self.run_btn.setText("▶ Run agent")
-        self._try_hydrate()
+        self._set_running(True)
+        self._agent_thread = AgentRunThread(self.api, self.job_id, self.STAGE_KEY, parent=self)
+        self._agent_thread.succeeded.connect(lambda _r: self._try_hydrate())
+        self._agent_thread.failed.connect(self._on_agent_failed)
+        self._agent_thread.finished.connect(lambda: self._set_running(False))
+        self._agent_thread.start()
 
     def showEvent(self, event) -> None:  # noqa: N802 (Qt naming)
         # Re-hydrate on every panel show so background finishes (or browser-

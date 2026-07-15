@@ -1,325 +1,75 @@
-qt.qpa.fonts: Populating font family aliases took 113 ms. Replace uses of missing font family "Inter" with one that exists to avoid this cost. 
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → POST http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/stage/artifacts/approve/  Bearer=eyJhbGciOiJI…CBClP0  body={}
-[api_client] ← 200 application/json  body='{"stage":"EXECUTE","written_files":["features/blu-b2c/newly-registered-pulze-it-user-age-gate-header-login-dashboard.feature","features/steps/blu-b2c/newly-registered-pulze-it-user-age-gate-header-log'
-[api_client] → POST http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/stage/execute/run/  Bearer=eyJhbGciOiJI…CBClP0  body={}
-[api_client] ← 202 application/json  body='{"stage":"EXECUTE","enqueued":true,"smoke_mode":false}'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…CBClP0  body=None
-[api_client] ← 401 application/json  body='{"detail":"Given token not valid for any token type","code":"token_not_valid","messages":[{"token_class":"AccessToken","token_type":"access","message":"Token is expired"}]}'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='[{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"MATERIALIZED","stage":"EXECUTE","jira_issue_key":"XX-97'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/e8c76349-8df1-468b-a751-a61533151356/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"e8c76349-8df1-468b-a751-a61533151356","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/"],"intent_hints":[],"cove'
-[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/b5593a57-dcfd-48be-96ce-7086d7fff75c/  Bearer=eyJhbGciOiJI…9IgQv0  body=None
-[api_client] ← 200 application/json  body='{"job_id":"b5593a57-dcfd-48be-96ce-7086d7fff75c","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+qt.qpa.fonts: Populating font family aliases took 117 ms. Replace uses of missing font family "Inter" with one that exists to avoid this cost. 
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → POST http://127.0.0.1:8000/integrations/jira/search/  Bearer=eyJhbGciOiJI…Kx7NG8  body={'jql': 'assignee=currentUser() ORDER BY created DESC', 'max_results': 50}
+[api_client] ← 200 application/json  body='{"issues":[{"expand":"renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations","id":"12690","self":"https://xebiaww.atlassian.net/rest/api/3/issue/12690","key":"XX-97","fiel'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='[{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","status":"DRAFTING","stage":"ARTIFACTS","jira_issue_key":"XX-97",'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/53280404-987b-40d3-9422-ff4b54261abb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"53280404-987b-40d3-9422-ff4b54261abb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'
+[api_client] → GET http://127.0.0.1:8000/test-generation/jobs/aead938c-1391-4156-ab8a-86d2dbcda6eb/  Bearer=eyJhbGciOiJI…Kx7NG8  body=None
+[api_client] ← 200 application/json  body='{"job_id":"aead938c-1391-4156-ab8a-86d2dbcda6eb","feature_name":"Newly-registered Pulze IT user: age gate + header login → dashboard","feature_description":"","seed_urls":["/it-IT/","/it-IT/account/lo'

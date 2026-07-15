@@ -20,6 +20,32 @@ QWidget {
     color: #6b6470;
     font-size: 12px;
 }
+/* Phase 12.2 — prettified empty-state block on every stage panel. */
+#emptyStateIcon {
+    font-size: 40px;
+    padding: 6px 0;
+}
+#emptyStateTitle {
+    color: #4a4451;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0 20px;
+}
+#emptyStateHint {
+    color: #8a8391;
+    font-size: 12px;
+    padding: 0 24px;
+}
+/* Indeterminate progress bar under the Run button. */
+#runProgress {
+    max-height: 4px;
+    background: transparent;
+    border: none;
+}
+#runProgress::chunk {
+    background-color: #681c5c;
+    border-radius: 2px;
+}
 #clientPill {
     background: rgba(104, 28, 92, 0.08);
     color: #681c5c;
