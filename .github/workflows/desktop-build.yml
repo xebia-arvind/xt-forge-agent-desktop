@@ -3,6 +3,11 @@ name: Desktop build
 on:
   push:
     branches: [main]
+    # Phase 22 — tagged pushes ALSO trigger a build, and the extra
+    # release step at the bottom of the job attaches both installers
+    # to a GitHub Release. Non-tag pushes continue to produce ephemeral
+    # workflow artifacts as before.
+    tags: ['v*.*.*']
   workflow_dispatch:
 
 jobs:
@@ -95,3 +100,27 @@ jobs:
           name: XT-Forge-windows
           path: dist/XT-Forge-Setup.exe
           if-no-files-found: error
+
+      # ---------- Phase 22 — publish tagged releases ----------
+      # softprops/action-gh-release@v2 is idempotent: whichever matrix
+      # leg finishes first CREATES the release for this tag; the other
+      # leg finds it and just uploads its installer to it. Both files
+      # end up in a single Release entry named after the tag.
+      #
+      # Only fires on `refs/tags/v*.*.*` pushes — regular `main` pushes
+      # keep their current "ephemeral artifact only" behaviour.
+      - name: Publish GitHub Release (macOS)
+        if: startsWith(github.ref, 'refs/tags/v') && matrix.os == 'macos-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/XT-Forge.dmg
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+
+      - name: Publish GitHub Release (Windows)
+        if: startsWith(github.ref, 'refs/tags/v') && matrix.os == 'windows-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/XT-Forge-Setup.exe
+          fail_on_unmatched_files: true
+          generate_release_notes: true
