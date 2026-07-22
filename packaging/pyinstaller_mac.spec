@@ -12,6 +12,14 @@ here = Path(SPECPATH).resolve().parent  # desktop-app/
 
 block_cipher = None
 
+
+def _optional_asset(rel_path: str, dest: str):
+    """Only include an asset in datas if it exists on disk. Lets CI
+    build a functional bundle even before the design team has committed
+    the login hero / logo PNGs (Phase 20)."""
+    p = here / rel_path
+    return (str(p), dest) if p.exists() else None
+
 a = Analysis(
     [str(here / "main.py")],
     pathex=[str(here)],
@@ -22,7 +30,17 @@ a = Analysis(
         # runtime code that wants to load it (dock badge, About dialog)
         # can resolve it via sys._MEIPASS.
         (str(here / "ui" / "xt-forge.icns"), "ui"),
-    ],
+        # Phase 19 — Bootstrap Icons font, registered at startup by
+        # bootstrap.py::_register_icon_font().
+        (str(here / "ui" / "fonts" / "bootstrap-icons.woff2"), "ui/fonts"),
+    ]
+    # Phase 20 — hero image + XT-Forge wordmark for the two-column
+    # login/setup shell (panels/_two_column.py). Optional at build
+    # time: the shell degrades to blank labels if either is missing.
+    + [e for e in (
+        _optional_asset("ui/images/login-hero.png",    "ui/images"),
+        _optional_asset("ui/images/xt-forge-logo.png", "ui/images"),
+    ) if e],
     hiddenimports=[
         "keyring.backends.macOS",
     ],

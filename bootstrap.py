@@ -115,10 +115,33 @@ def _install_chromium_blocking(parent: Optional[QWidget]) -> tuple[bool, str]:
     return False, "\n".join(tail[-25:]) or f"playwright install exited with rc={rc}"
 
 
+def _register_icon_font() -> None:
+    """Phase 19 — register Bootstrap Icons so `QFont('bootstrap-icons')`
+    resolves and `ui/icons.py::bi_icon()` renders. Idempotent — Qt
+    de-dupes across repeated calls. Resolves the woff2 path whether we're
+    running from source (desktop-app/ui/fonts/) or from a PyInstaller
+    bundle (sys._MEIPASS/ui/fonts/)."""
+    try:
+        from PySide6.QtGui import QFontDatabase
+    except Exception:
+        return
+    base = Path(getattr(sys, "_MEIPASS", "")) if getattr(sys, "_MEIPASS", None) else Path(__file__).resolve().parent
+    font_path = base / "ui" / "fonts" / "bootstrap-icons.woff2"
+    if font_path.exists():
+        try:
+            QFontDatabase.addApplicationFont(str(font_path))
+        except Exception:
+            pass
+
+
 def ensure_dependencies(parent: Optional[QWidget] = None) -> bool:
     """Idempotent: safe to call on every launch. Returns True when the
     app is ready to boot MainWindow, False when the operator dismissed
     an unrecoverable error (caller should QApplication.quit)."""
+    # Phase 19 — register the icon font on every launch. Cheap +
+    # unrelated to the Playwright bootstrap flow, so it runs first.
+    _register_icon_font()
+
     settings = QSettings()  # honors QApplication org+app name
     if settings.value(_QSETTINGS_KEY, False, type=bool):
         return True

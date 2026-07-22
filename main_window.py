@@ -12,13 +12,19 @@ from __future__ import annotations
 
 from typing import Dict
 
+import sys
+from pathlib import Path
+
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
+    QComboBox,
     QHBoxLayout,
     QLabel,
     QListWidget,
     QListWidgetItem,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QStackedWidget,
     QVBoxLayout,
@@ -26,7 +32,16 @@ from PySide6.QtWidgets import (
 )
 
 import auth_store
-from api_client import APIClient
+from api_client import APIClient, APIError, AuthError
+from ui.icons import bi_icon
+
+
+def _logo_asset_path() -> Path:
+    """Resolve the XT-Forge wordmark (Phase 20 asset) whether we're
+    running from source or a PyInstaller bundle. Mirrors the
+    _asset_path helper in panels/_two_column.py."""
+    base = Path(getattr(sys, "_MEIPASS", "")) if getattr(sys, "_MEIPASS", None) else Path(__file__).resolve().parent
+    return base / "ui" / "images" / "xt-forge-logo.png"
 from panels.execute import ExecutePanel
 from panels.feature import FeaturePanel
 from panels.jobs import JobsPanel
@@ -36,19 +51,26 @@ from panels.review import ReviewPanel
 from panels.worklist import WorklistPanel
 
 
+# Phase 19 — tuple grew from 3 to 4: (slug, label, section, bootstrap-icon-name).
+# Emoji removed from labels; icons come from `ui.icons.bi_icon()`.
 NAV_ITEMS = [
-    ("jobs",         "📈  Jobs",         "analytics"),
-    ("worklist",     "🗂  Worklist",     "workflow"),
-    ("feature",      "🧬  Feature",      "pipeline"),
-    ("manual_tests", "📝  Manual Tests", "pipeline"),
-    ("plan",         "🗺️  Plan",         "pipeline"),
-    ("review",       "🔍  Review",       "pipeline"),
-    ("execute",      "▶  Execute",       "pipeline"),
+    ("jobs",         "Jobs",         "analytics", "graph-up-arrow"),
+    ("worklist",     "Worklist",     "workflow",  "folder2"),
+    ("feature",      "Feature",      "pipeline",  "puzzle"),
+    ("manual_tests", "Manual Tests", "pipeline",  "journal-text"),
+    ("plan",         "Plan",         "pipeline",  "diagram-3"),
+    ("review",       "Review",       "pipeline",  "search"),
+    ("execute",      "Execute",      "pipeline",  "play-fill"),
 ]
 
 
 class MainWindow(QMainWindow):
     logout_requested = Signal()
+    # Phase 18 — emitted after a successful header-dropdown client switch.
+    # Panels don't currently listen to this; the switch handler calls
+    # `_refresh_current_panel()` directly. Kept as a signal so future
+    # panels can subscribe without threading through MainWindow.
+    client_changed = Signal(str)   # emits the new client's UUID
 
     def __init__(self, api: APIClient, parent=None):
         super().__init__(parent)
@@ -58,6 +80,7 @@ class MainWindow(QMainWindow):
         self.current_job_id: str = ""
         self.current_jira_key: str = ""
         self._panels: Dict[str, QWidget] = {}
+        self._client_options: list = []
         self._build_ui()
 
     def _build_ui(self) -> None:
@@ -83,9 +106,14 @@ class MainWindow(QMainWindow):
         client_label_prefix.setObjectName("hint")
         top_layout.addWidget(client_label_prefix)
 
-        self.client_label = QLabel(self.api.state.client_name or "—")
-        self.client_label.setObjectName("clientPill")
-        top_layout.addWidget(self.client_label)
+        # Phase 18 — replaces the read-only client pill with a switching
+        # dropdown. Populated on init via /auth/my-clients/. Selecting a
+        # different item calls /auth/pick-client/ and refreshes the panel.
+        self.client_combo = QComboBox()
+        self.client_combo.setObjectName("clientPicker")
+        self.client_combo.setMinimumWidth(180)
+        self.client_combo.activated.connect(self._on_client_switch)
+        top_layout.addWidget(self.client_combo)
 
         self.email_label = QLabel(self.api.state.email or "")
         self.email_label.setObjectName("emailPill")
@@ -95,6 +123,19 @@ class MainWindow(QMainWindow):
         self.logout_btn.setObjectName("linkButton")
         self.logout_btn.clicked.connect(self._logout)
         top_layout.addWidget(self.logout_btn)
+
+        # Phase 20 — brand wordmark on the far-right of the header.
+        # Same asset used by the two-column login/setup shell. Silent
+        # fallback when the PNG isn't present so builds don't crash on
+        # branches that haven't checked the asset in.
+        logo_path = _logo_asset_path()
+        if logo_path.exists():
+            self.header_logo = QLabel()
+            self.header_logo.setObjectName("headerLogo")
+            pm = QPixmap(str(logo_path))
+            pm = pm.scaledToHeight(32, Qt.SmoothTransformation)
+            self.header_logo.setPixmap(pm)
+            top_layout.addWidget(self.header_logo)
 
         root.addWidget(top_bar)
 
@@ -110,17 +151,17 @@ class MainWindow(QMainWindow):
 
         # Phase 7.3 — Analytics on top, Jobs as the landing row.
         self._add_nav_header("ANALYTICS")
-        for slug, label, kind in NAV_ITEMS:
+        for slug, label, kind, icon_name in NAV_ITEMS:
             if kind == "analytics":
-                self._add_nav_item(slug, label)
+                self._add_nav_item(slug, label, icon_name)
         self._add_nav_header("WORKFLOW")
-        for slug, label, kind in NAV_ITEMS:
+        for slug, label, kind, icon_name in NAV_ITEMS:
             if kind == "workflow":
-                self._add_nav_item(slug, label)
+                self._add_nav_item(slug, label, icon_name)
         self._add_nav_header("PIPELINE")
-        for slug, label, kind in NAV_ITEMS:
+        for slug, label, kind, icon_name in NAV_ITEMS:
             if kind == "pipeline":
-                self._add_nav_item(slug, label)
+                self._add_nav_item(slug, label, icon_name)
 
         self.sidebar.currentRowChanged.connect(self._nav_changed)
         body_layout.addWidget(self.sidebar)
@@ -165,6 +206,100 @@ class MainWindow(QMainWindow):
         self.sidebar.setCurrentRow(1)
         self._panels["jobs"].reload() if hasattr(self._panels["jobs"], "reload") else None
 
+        # Phase 18 — populate the header client dropdown once the UI is up.
+        self._populate_client_combo()
+
+    def _populate_client_combo(self) -> None:
+        """Fetch /auth/my-clients/ and populate the top-right dropdown.
+        Best-effort — a failure here doesn't block the shell; we fall
+        back to a single-item combo showing the active client name."""
+        try:
+            data = self.api.list_my_clients()
+            clients = list(data.get("clients") or [])
+        except (APIError, AuthError):
+            clients = []
+
+        active_id = str(self.api.state.client_secret or "")
+        active_name = self.api.state.client_name or ""
+
+        # If we couldn't fetch, at least show the active client so the
+        # header isn't blank.
+        if not clients and active_name:
+            clients = [{"id": active_id, "name": active_name, "slug": ""}]
+
+        self._client_options = clients
+
+        self.client_combo.blockSignals(True)
+        self.client_combo.clear()
+        selected_index = 0
+        for i, c in enumerate(clients):
+            self.client_combo.addItem(c.get("name") or c.get("slug") or c.get("id") or "—",
+                                      userData=str(c.get("id") or ""))
+            if str(c.get("id") or "") == active_id:
+                selected_index = i
+        self.client_combo.setCurrentIndex(selected_index)
+        # Single-client tenants shouldn't invite a pointless click.
+        self.client_combo.setEnabled(len(clients) > 1)
+        self.client_combo.blockSignals(False)
+
+    def _on_client_switch(self, index: int) -> None:
+        """Header dropdown activated by the user. Swap tenants and refresh
+        whatever panel is currently visible."""
+        new_id = str(self.client_combo.itemData(index) or "")
+        prev_id = str(self.api.state.client_secret or "")
+        if not new_id or new_id == prev_id:
+            return
+        try:
+            self.api.pick_client(new_id)
+        except (APIError, AuthError) as exc:
+            # Revert the combo to the previous selection and surface a
+            # modal — silent failure would leave the operator staring at
+            # the wrong client name.
+            QMessageBox.warning(
+                self, "Client switch failed",
+                f"Could not switch client: {exc}\n\nStaying on the "
+                "previous tenant.",
+            )
+            self._populate_client_combo()
+            return
+
+        # Persist the new session so a keychain re-hydrate doesn't fall
+        # back to a stale token.
+        auth_store.save_session(
+            access=self.api.state.access,
+            refresh=self.api.state.refresh,
+            email=self.api.state.email,
+            client_name=self.api.state.client_name,
+            client_secret=self.api.state.client_secret,
+        )
+        # Clear the current job — it belonged to the previous tenant and
+        # its id won't resolve under the new JWT.
+        self.current_job_id = ""
+        self.current_jira_key = ""
+        for slug in ("feature", "manual_tests", "plan", "review", "execute"):
+            panel = self._panels.get(slug)
+            if panel is not None and hasattr(panel, "set_job"):
+                try:
+                    panel.set_job("", "")
+                except Exception:
+                    pass
+        self.client_changed.emit(new_id)
+        self._refresh_current_panel()
+
+    def _refresh_current_panel(self) -> None:
+        """Re-hydrate whichever panel is currently visible. Jobs + Worklist
+        have explicit reload paths; stage panels re-fetch via set_job()."""
+        current = self.stack.currentWidget()
+        if current is self._panels.get("jobs") and hasattr(current, "reload"):
+            current.reload()
+            return
+        if current is self._panels.get("worklist"):
+            # WorklistPanel auto-loads via showEvent — trigger it by
+            # re-selecting the row.
+            row = self.sidebar.currentRow()
+            self.sidebar.setCurrentRow(-1)
+            self.sidebar.setCurrentRow(row)
+
     # ------------------------------------------------------------------
     def _add_nav_header(self, text: str) -> None:
         header = QListWidgetItem(text)
@@ -173,9 +308,13 @@ class MainWindow(QMainWindow):
         header.setForeground(Qt.gray)
         self.sidebar.addItem(header)
 
-    def _add_nav_item(self, slug: str, label: str) -> None:
+    def _add_nav_item(self, slug: str, label: str, icon_name: str = "") -> None:
         item = QListWidgetItem(label)
         item.setData(Qt.UserRole, slug)
+        if icon_name:
+            # Phase 19 — Bootstrap Icons. Colour matches the sidebar's
+            # near-white text (#dbeafe per style.qss #sidebar nav a rule).
+            item.setIcon(bi_icon(icon_name, color="#dbeafe", size=18))
         self.sidebar.addItem(item)
 
     def _nav_changed(self, row: int) -> None:

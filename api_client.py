@@ -56,6 +56,12 @@ class Session:
     refresh: str = ""
     # Password stays in RAM only. Cleared on logout.
     _password: str = field(default="", repr=False)
+    # Phase 18 — populated only when the backend responds with
+    # needs_client_pick (multi-client login). Consumed by the picker modal
+    # and cleared once pick_client() succeeds. picker_token authenticates
+    # the /auth/pick-client/ call without needing a full JWT yet.
+    picker_token: str = field(default="", repr=False)
+    available_clients: list = field(default_factory=list)
 
 
 class APIClient:
@@ -77,13 +83,26 @@ class APIClient:
     # ------------------------------------------------------------------
     # Auth
     # ------------------------------------------------------------------
-    def login(self, email: str, password: str, client_secret: str) -> Dict[str, Any]:
-        """POST /auth/login/. Populates in-memory state on success."""
+    def login(self, email: str, password: str, client_secret: Optional[str] = None) -> Dict[str, Any]:
+        """POST /auth/login/. Populates in-memory state on success.
+
+        Phase 18 — `client_secret` is optional:
+          * When omitted AND the user has 2+ assigned clients, the backend
+            returns {needs_client_pick, available_clients, picker_token}.
+            The caller must show a picker UI and call `pick_client()` next.
+          * When omitted AND the user has exactly one assigned client, the
+            backend auto-picks it and returns the standard tokens payload.
+          * When provided (legacy path — wraper-healer), behaviour is
+            unchanged.
+        """
         url = self._url("/auth/login/")
+        body_out: Dict[str, Any] = {"email": email, "password": password}
+        if client_secret:
+            body_out["client_secret"] = client_secret
         try:
             resp = self.session.post(
                 url,
-                json={"email": email, "password": password, "client_secret": client_secret},
+                json=body_out,
                 headers={"Content-Type": "application/json"},
                 timeout=self.timeout,
             )
@@ -98,20 +117,105 @@ class APIClient:
         except ValueError:
             raise AuthError(resp.status_code, "Login response was not JSON", url)
 
+        # Phase 18 — multi-client branch. Stash picker_token + client list
+        # on self.state so the picker modal can consume them. No JWT yet.
+        if body.get("needs_client_pick"):
+            self.state = Session(
+                email=email,
+                client_name="",
+                client_secret="",
+                access="",
+                refresh="",
+                _password=password,
+                picker_token=str(body.get("picker_token") or ""),
+                available_clients=list(body.get("available_clients") or []),
+            )
+            return body
+
         tokens = body.get("tokens") or {}
         access = tokens.get("access") or ""
         if not access:
             raise AuthError(500, "Login response missing tokens.access", url)
 
+        client_obj = body.get("client") or {}
+        # For the single-client / explicit-secret path we still want a
+        # stable client_secret in state (used by the fallback re-login
+        # path and by the auth_store persistence blob). The backend
+        # returns the client id in `client.id`.
+        resolved_secret = client_secret or str(client_obj.get("id") or "")
         self.state = Session(
             email=email,
-            client_name=(body.get("client") or {}).get("name", "") or "",
-            client_secret=client_secret,
+            client_name=client_obj.get("name", "") or "",
+            client_secret=resolved_secret,
             access=access,
             refresh=tokens.get("refresh") or "",
             _password=password,
         )
         return body
+
+    # ------------------------------------------------------------------
+    # Phase 18 — multi-tenant helpers
+    # ------------------------------------------------------------------
+    def pick_client(self, client_id: str) -> Dict[str, Any]:
+        """POST /auth/pick-client/ with the current bearer (picker_token
+        from the multi-client login response, OR a full JWT when the user
+        is switching from the header dropdown). On 200, updates self.state
+        with the fresh session JWT + client name."""
+        url = self._url("/auth/pick-client/")
+        bearer = self.state.access or self.state.picker_token
+        if not bearer:
+            raise AuthError(401, "No token available to pick a client", url)
+        try:
+            resp = self.session.post(
+                url,
+                json={"client_id": client_id},
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {bearer}",
+                },
+                timeout=self.timeout,
+            )
+        except requests.RequestException as exc:
+            raise APIError(0, f"Could not reach {url}: {exc}", url) from exc
+
+        if resp.status_code == 401:
+            raise AuthError(401, resp.text, url)
+        if resp.status_code != 200:
+            raise APIError(resp.status_code, resp.text, url)
+
+        try:
+            body = resp.json()
+        except ValueError:
+            raise APIError(resp.status_code, "pick-client response was not JSON", url)
+
+        tokens = body.get("tokens") or {}
+        access = tokens.get("access") or ""
+        if not access:
+            raise APIError(500, "pick-client response missing tokens.access", url)
+
+        client_obj = body.get("client") or {}
+        # Preserve email + cached password across the swap; only the JWT
+        # and active client change. Clear the picker_token — it's spent.
+        self.state = Session(
+            email=self.state.email or (body.get("user") or {}).get("email", "") or "",
+            client_name=client_obj.get("name", "") or "",
+            client_secret=str(client_obj.get("id") or ""),
+            access=access,
+            refresh=tokens.get("refresh") or "",
+            _password=self.state._password,
+            picker_token="",
+            available_clients=[],
+        )
+        return body
+
+    def list_my_clients(self) -> Dict[str, Any]:
+        """GET /auth/my-clients/ — returns the caller's assigned tenants.
+        Used by the desktop header dropdown."""
+        resp = self._authed_request("GET", "/auth/my-clients/")
+        try:
+            return resp.json()
+        except ValueError:
+            raise APIError(resp.status_code, "my-clients response was not JSON", self._url("/auth/my-clients/"))
 
     def restore_session(self, access: str, refresh: str, email: str, client_secret: str, client_name: str) -> None:
         """Rehydrate from the keychain — no network call. Password stays empty."""

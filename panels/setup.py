@@ -1,4 +1,8 @@
-"""First-launch backend URL entry."""
+"""First-launch backend URL entry.
+
+Phase 20 — same two-column shell as LoginPanel (hero image on the left,
+form + XT-Forge logo on the right). Form logic itself is unchanged; the
+whole vertical stack is built in `_build_form()` and handed to the shell."""
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal
@@ -11,6 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 import app_settings
+from panels._two_column import build_two_column
 
 
 class SetupPanel(QWidget):
@@ -24,10 +29,19 @@ class SetupPanel(QWidget):
         self._build_ui()
 
     def _build_ui(self) -> None:
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(80, 60, 80, 60)
+        # Outer layout hosts a single child — the two-column shell.
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
+        outer.addWidget(build_two_column(self._build_form()))
+
+    def _build_form(self) -> QWidget:
+        """The vertical stack of URL input + save button that lives inside
+        the two-column shell's right column."""
+        form = QWidget()
+        layout = QVBoxLayout(form)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(14)
-        layout.addStretch(1)
 
         title = QLabel("Configure XT-Forge backend")
         title.setObjectName("h1")
@@ -59,7 +73,10 @@ class SetupPanel(QWidget):
         self.save_btn.clicked.connect(self._save)
         layout.addWidget(self.save_btn)
 
-        layout.addStretch(2)
+        # Enter submits.
+        self.url_input.returnPressed.connect(self._save)
+
+        return form
 
     def _save(self) -> None:
         url = self.url_input.text().strip().rstrip("/")

@@ -74,7 +74,10 @@ def _kr_del(key: str) -> None:
         pass
 
 
-def save_session(access: str, refresh: str, email: str, client_name: str, client_secret: str) -> None:
+def save_session(access: str, refresh: str, email: str, client_name: str, client_secret: str = "") -> None:
+    # Phase 18 — client_secret is now optional. Desktop users log in with
+    # email+password only; the JWT (access/refresh) carries client_id, so a
+    # stored secret is no longer required for the session to work.
     meta = json.dumps({"email": email, "client_name": client_name, "client_secret": client_secret})
     ok = _kr_set(_KEY_ACCESS, access) and _kr_set(_KEY_REFRESH, refresh) and _kr_set(_KEY_META, meta)
     if not ok:

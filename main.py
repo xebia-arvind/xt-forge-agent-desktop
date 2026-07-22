@@ -24,6 +24,7 @@ from api_client import APIClient
 from bootstrap import ensure_dependencies
 from main_window import MainWindow
 from panels.login import LoginPanel
+from panels.pick_client import ClientPickerDialog
 from panels.setup import SetupPanel
 
 
@@ -76,9 +77,19 @@ class AppShell:
 
         panel = LoginPanel(self.api)
         panel.logged_in.connect(self._show_main)
+        panel.needs_pick.connect(self._show_client_picker)
         panel.server_change_requested.connect(self._back_to_setup)
         self._replace(panel)
         self.login_panel = panel
+
+    def _show_client_picker(self, clients) -> None:
+        # Phase 18 — the LoginPanel handed us the list of tenants the user
+        # can access. Show a modal picker; on success we hold a full JWT
+        # and can jump to MainWindow. On cancel we stay on the LoginPanel
+        # so the operator can retry / change credentials.
+        dlg = ClientPickerDialog(self.api, list(clients), parent=self.stack)
+        dlg.picked.connect(self._show_main)
+        dlg.exec()
 
     def _show_main(self) -> None:
         mw = MainWindow(self.api)

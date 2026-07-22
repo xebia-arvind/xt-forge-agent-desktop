@@ -28,6 +28,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from ui.icons import bi_icon
+from ui.highlighters import highlighter_for
+
 from api_client import APIError
 from panels._stage_base import StagePanelBase
 from panels._visuals import badge, bullet_list, card
@@ -228,8 +231,9 @@ class ReviewPanel(StagePanelBase):
             warnings = artifact.get("warnings") or []
 
             marker = "✓" if status_ != "INVALID" else "✕"
-            item = QListWidgetItem(f"{marker} {_type_icon(atype)}  {os.path.basename(path)}")
+            item = QListWidgetItem(f"{marker}  {os.path.basename(path)}")
             item.setToolTip(path)
+            item.setIcon(bi_icon(_type_icon_name(atype), color="#1a0a16", size=16))
             file_list.addItem(item)
 
             viewer = _file_viewer(
@@ -278,13 +282,14 @@ def _type_badge(type_key: str, count: int) -> QLabel:
     return badge(f"{count} {label}", kind=kind)
 
 
-def _type_icon(type_key: str) -> str:
+def _type_icon_name(type_key: str) -> str:
+    # Phase 19 — Bootstrap Icons name for each artifact type.
     return {
-        "PAGE_OBJECT": "📦",
-        "SPEC": "🧪",
-        "FEATURE": "🥒",
-        "STEP_DEFINITIONS": "🔗",
-    }.get(type_key.upper(), "📄")
+        "PAGE_OBJECT":      "box",
+        "SPEC":             "braces",
+        "FEATURE":          "file-earmark-code",
+        "STEP_DEFINITIONS": "braces",
+    }.get(type_key.upper(), "question-circle")
 
 
 def _file_viewer(path: str, content: str, status_: str = "VALID",
@@ -336,6 +341,15 @@ def _file_viewer(path: str, content: str, status_: str = "VALID",
     mono = QFont("JetBrains Mono, Menlo, Consolas, monospace", 11)
     editor.setFont(mono)
     editor.setPlainText(content or "(empty file)")
+    # Phase 21 — VS Code Dark+ syntax highlighting. The highlighter
+    # subclasses QSyntaxHighlighter and paints tokens directly; we
+    # attach it to the QPlainTextEdit's document AFTER setPlainText so
+    # the first pass runs against the final content. Qt requires we
+    # keep a reference (`_highlighter`) or the object gets GC'd and
+    # the colours vanish.
+    hl = highlighter_for(path, editor.document())
+    if hl is not None:
+        editor._highlighter = hl   # keep-alive
     layout.addWidget(editor, 1)
 
     return wrapper
