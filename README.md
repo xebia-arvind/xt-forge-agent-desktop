@@ -2,7 +2,11 @@
 
 PySide6 desktop client for the XT-Forge Django pipeline. Talks to the same backend the browser panel uses (`/test-analytics/*`, `/test-generation/*`, `/runners/*`, `/integrations/jira/*`, `/auth/login/`) via JWT-authenticated HTTP APIs. Cross-platform — ships as a `.dmg` on macOS and a `.exe` (Inno Setup) on Windows.
 
-> **Are you an end user, not a developer?** See [**SETUP.md**](SETUP.md) for the install-and-first-launch walkthrough. The `.exe` bundles Python + PySide6 + Playwright's pip package; Chromium auto-downloads on first launch. No terminal commands needed.
+> **Are you an end user, not a developer?**
+> - **Windows** → [**SETUP.md**](SETUP.md) (`.exe` installer via Inno Setup).
+> - **macOS** → [**SETUP-mac.md**](SETUP-mac.md) (`.dmg`, Apple Silicon).
+>
+> Either installer bundles Python + PySide6 + Playwright's pip package; Chromium auto-downloads on first launch via the shared `bootstrap.py`. No terminal commands needed.
 
 ## Scope (Phase 7)
 

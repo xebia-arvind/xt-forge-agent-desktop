@@ -21,6 +21,7 @@ from PySide6.QtWidgets import QApplication, QStackedWidget
 import app_settings
 import auth_store
 from api_client import APIClient
+from bootstrap import ensure_dependencies
 from main_window import MainWindow
 from panels.login import LoginPanel
 from panels.setup import SetupPanel
@@ -116,6 +117,20 @@ def main() -> int:
     qss = _load_stylesheet()
     if qss:
         app.setStyleSheet(qss)
+
+    # Phase 17 — one-time first-launch bootstrap. Downloads Playwright
+    # Chromium if it's not already on disk. Subsequent launches short-
+    # circuit via a QSettings flag. If the download fails, ensure_deps
+    # surfaces its own modal and we abort here — the user gets the SETUP
+    # guide reference rather than a broken app screen.
+    try:
+        if not ensure_dependencies():
+            return 1
+    except Exception:  # noqa: BLE001 — never crash the shell on bootstrap.
+        # Fall through to the app anyway; individual pipelines will fail
+        # loudly if the browsers are actually missing, but the shell
+        # (login, setup, jobs list) still works.
+        pass
 
     shell = AppShell()
     shell.start()

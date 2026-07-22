@@ -18,6 +18,10 @@ a = Analysis(
     binaries=[],
     datas=[
         (str(here / "ui" / "style.qss"), "ui"),
+        # Phase 17 — ship the icon inside Contents/Resources/ so any
+        # runtime code that wants to load it (dock badge, About dialog)
+        # can resolve it via sys._MEIPASS.
+        (str(here / "ui" / "xt-forge.icns"), "ui"),
     ],
     hiddenimports=[
         "keyring.backends.macOS",
@@ -65,7 +69,9 @@ coll = COLLECT(
 app = BUNDLE(
     coll,
     name="XT-Forge.app",
-    icon=None,
+    # Phase 17 — Finder + Dock icon. Generated once from ui/xt-forge.ico
+    # via `iconutil -c icns …`; see SETUP-mac.md for regen instructions.
+    icon=str(here / "ui" / "xt-forge.icns"),
     bundle_identifier="com.xtforge.desktop",
     info_plist={
         "CFBundleName": "XT-Forge",
