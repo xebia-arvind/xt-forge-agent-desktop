@@ -19,10 +19,13 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin
 
+import certifi
 import requests
 
 _DEBUG = os.environ.get("XTFORGE_DEBUG") == "1"
@@ -31,6 +34,95 @@ _DEBUG = os.environ.get("XTFORGE_DEBUG") == "1"
 def _dlog(msg: str) -> None:
     if _DEBUG:
         print(f"[api_client] {msg}", file=sys.stderr, flush=True)
+
+
+# ---------------------------------------------------------------------------
+# TLS trust configuration
+# ---------------------------------------------------------------------------
+# Some backends (notably production behind Nginx) don't serve the full
+# certificate chain — they omit the intermediate. Python's requests/OpenSSL
+# does not chase AIA links the way browsers do, so the connection fails with
+# "unable to get local issuer certificate" even though the cert is valid.
+#
+# We solve this three ways, in order of preference:
+#   1. Bundle known intermediates in `ui/certs/*.pem` and merge them into
+#      certifi's CA bundle at startup. Ships with the app; zero config.
+#   2. Honor `XT_CA_BUNDLE=/abs/path.pem` env var for corporate CAs the
+#      bundled set doesn't cover.
+#   3. Honor `XT_INSECURE_SKIP_VERIFY=1` as a last-resort dev bypass. Never
+#      use this against production — it disables MITM protection.
+# ---------------------------------------------------------------------------
+
+_INSECURE = os.environ.get("XT_INSECURE_SKIP_VERIFY") == "1"
+
+
+def _certs_dir() -> Path:
+    """Where the bundled intermediates live. Works from source and from a
+    PyInstaller onefile bundle (sys._MEIPASS)."""
+    base = Path(getattr(sys, "_MEIPASS", "")) if getattr(sys, "_MEIPASS", None) else Path(__file__).resolve().parent
+    return base / "ui" / "certs"
+
+
+def _read_bundled_intermediates() -> List[bytes]:
+    """Every .pem in ui/certs/. Empty list is fine (fall back to certifi)."""
+    d = _certs_dir()
+    if not d.exists():
+        return []
+    out: List[bytes] = []
+    for pem in sorted(d.glob("*.pem")):
+        try:
+            out.append(pem.read_bytes())
+        except OSError as exc:
+            _dlog(f"skipping {pem}: {exc}")
+    return out
+
+
+_MERGED_BUNDLE_PATH: Optional[str] = None
+
+
+def _build_ca_bundle() -> Optional[str]:
+    """Merge certifi's bundle + bundled intermediates + XT_CA_BUNDLE into a
+    single temp PEM. Returns the path (used as `session.verify = <path>`).
+
+    Returns None when the user asked for insecure mode (no verification).
+    Cached across the process — we only build the merged file once.
+    """
+    global _MERGED_BUNDLE_PATH
+    if _INSECURE:
+        return None
+    if _MERGED_BUNDLE_PATH and Path(_MERGED_BUNDLE_PATH).exists():
+        return _MERGED_BUNDLE_PATH
+
+    chunks: List[bytes] = []
+    try:
+        chunks.append(Path(certifi.where()).read_bytes())
+    except OSError as exc:
+        _dlog(f"could not read certifi bundle: {exc}")
+
+    chunks.extend(_read_bundled_intermediates())
+
+    extra = os.environ.get("XT_CA_BUNDLE", "").strip()
+    if extra and Path(extra).exists():
+        try:
+            chunks.append(Path(extra).read_bytes())
+            _dlog(f"appended XT_CA_BUNDLE from {extra}")
+        except OSError as exc:
+            _dlog(f"could not read XT_CA_BUNDLE at {extra}: {exc}")
+
+    if not chunks:
+        return certifi.where()
+
+    fd, path = tempfile.mkstemp(prefix="xt-forge-ca-", suffix=".pem")
+    try:
+        with os.fdopen(fd, "wb") as fh:
+            fh.write(b"\n".join(chunks))
+    except OSError as exc:
+        _dlog(f"could not write merged bundle: {exc}")
+        return certifi.where()
+
+    _MERGED_BUNDLE_PATH = path
+    _dlog(f"merged CA bundle written to {path}")
+    return path
 
 
 class APIError(RuntimeError):
@@ -78,6 +170,19 @@ class APIClient:
         self.backend_url = backend_url.rstrip("/")
         self.timeout = timeout
         self.session = requests.Session()
+        # Apply TLS trust settings — bundled intermediates + optional
+        # XT_CA_BUNDLE override, or verify=False when XT_INSECURE_SKIP_VERIFY=1.
+        bundle = _build_ca_bundle()
+        if bundle is None:
+            self.session.verify = False
+            try:
+                import urllib3
+                urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            except Exception:  # noqa: BLE001
+                pass
+            _dlog("TLS verification DISABLED via XT_INSECURE_SKIP_VERIFY=1")
+        else:
+            self.session.verify = bundle
         self.state = Session()
 
     # ------------------------------------------------------------------
@@ -411,6 +516,64 @@ class APIClient:
             "POST",
             f"/test-generation/jobs/{job_id}/stage/{stage}/approve/",
             json_body=body or {},
+        )
+        self._raise_if_bad(resp)
+        return self._json(resp)
+
+    # ------------------------------------------------------------------
+    # Manual Executor (Phase 16)
+    # ------------------------------------------------------------------
+    def manual_cucumber_run(self, job_id: str, headed: bool = False) -> Dict[str, Any]:
+        resp = self._authed_request(
+            "POST",
+            f"/test-generation/jobs/{job_id}/manual-run/",
+            json_body={"headed": bool(headed)},
+        )
+        self._raise_if_bad(resp)
+        return self._json(resp)
+
+    def manual_cucumber_finalize(self, job_id: str, runner_job_id: int) -> Dict[str, Any]:
+        resp = self._authed_request(
+            "POST",
+            f"/test-generation/jobs/{job_id}/manual-run/finalize/",
+            json_body={"runner_job_id": int(runner_job_id)},
+        )
+        self._raise_if_bad(resp)
+        return self._json(resp)
+
+    def manual_artifact_fix(
+        self,
+        job_id: str,
+        error_message: str,
+        relative_path: str = "",
+    ) -> Dict[str, Any]:
+        body: Dict[str, Any] = {"error_message": error_message}
+        if relative_path:
+            body["relative_path"] = relative_path
+        resp = self._authed_request(
+            "POST",
+            f"/test-generation/jobs/{job_id}/manual-fix/",
+            json_body=body,
+            timeout=180.0,
+        )
+        self._raise_if_bad(resp)
+        return self._json(resp)
+
+    def artifact_update(
+        self,
+        job_id: str,
+        relative_path: str,
+        content: str,
+        update_draft: bool = True,
+    ) -> Dict[str, Any]:
+        resp = self._authed_request(
+            "POST",
+            f"/test-generation/jobs/{job_id}/artifacts/update/",
+            json_body={
+                "relative_path": relative_path,
+                "content": content,
+                "update_draft": update_draft,
+            },
         )
         self._raise_if_bad(resp)
         return self._json(resp)
