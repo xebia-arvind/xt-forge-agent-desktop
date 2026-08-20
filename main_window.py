@@ -42,7 +42,7 @@ def _logo_asset_path() -> Path:
     _asset_path helper in panels/_two_column.py."""
     base = Path(getattr(sys, "_MEIPASS", "")) if getattr(sys, "_MEIPASS", None) else Path(__file__).resolve().parent
     return base / "ui" / "images" / "xt-forge-logo.png"
-from panels.execute import ExecutePanel
+from panels.execute_container import ExecuteContainer
 from panels.feature import FeaturePanel
 from panels.jobs import JobsPanel
 from panels.manual_tests import ManualTestsPanel
@@ -97,9 +97,19 @@ class MainWindow(QMainWindow):
         top_layout = QHBoxLayout(top_bar)
         top_layout.setContentsMargins(20, 8, 20, 8)
 
-        title = QLabel("🛡️  XT-Forge")
-        title.setObjectName("brand")
-        top_layout.addWidget(title)
+        # Brand: PNG logo (Aug 2026 request — replaces the 🛡️ XT-Forge text
+        # with the wordmark asset). Falls back to the text label if the
+        # PNG is missing so dev branches without the asset still boot.
+        _brand_logo_path = _logo_asset_path()
+        if _brand_logo_path.exists():
+            brand = QLabel()
+            brand.setObjectName("brand")
+            _brand_pm = QPixmap(str(_brand_logo_path))
+            brand.setPixmap(_brand_pm.scaledToHeight(36, Qt.SmoothTransformation))
+        else:
+            brand = QLabel("🛡️  XT-Forge")
+            brand.setObjectName("brand")
+        top_layout.addWidget(brand)
         top_layout.addStretch(1)
 
         client_label_prefix = QLabel("Client:")
@@ -179,7 +189,7 @@ class MainWindow(QMainWindow):
         self._panels["manual_tests"] = ManualTestsPanel(self.api)
         self._panels["plan"] = PlanPanel(self.api)
         self._panels["review"] = ReviewPanel(self.api)
-        self._panels["execute"] = ExecutePanel(self.api)
+        self._panels["execute"] = ExecuteContainer(self.api)
 
         # Stack order mirrors nav order — Jobs first so it's the default view.
         for slug in ("jobs", "worklist", "feature", "manual_tests", "plan", "review", "execute"):
