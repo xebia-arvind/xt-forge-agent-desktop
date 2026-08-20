@@ -40,6 +40,9 @@ a = Analysis(
     + [e for e in (
         _optional_asset("ui/images/login-hero.png",    "ui/images"),
         _optional_asset("ui/images/xt-forge-logo.png", "ui/images"),
+        # TLS intermediates the app trusts on top of certifi. See
+        # api_client._build_ca_bundle() — merged at startup.
+        _optional_asset("ui/certs/sectigo-r36.pem",    "ui/certs"),
     ) if e],
     hiddenimports=[
         "keyring.backends.macOS",
