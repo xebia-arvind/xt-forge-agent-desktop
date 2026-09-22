@@ -37,13 +37,13 @@ from PySide6.QtWidgets import (
 )
 
 
-# The default sibling repo path. Overridden per-run via IMPERIAL_AUTOMATION_DIR
-# in the process environment so power users can point at a different checkout
-# without touching this file.
+# The default imperial-ai-automation checkout path. Overridable at launch
+# time via IMPERIAL_AUTOMATION_DIR so power users can point at a different
+# checkout without touching this file.
 _DEFAULT_IMPERIAL_DIR = Path(
     os.environ.get(
         "IMPERIAL_AUTOMATION_DIR",
-        "/Users/arvind.kumar1/Desktop/Xebia-Projects/imperial-ai-automation",
+        "/Users/niraj.chaudhary/Desktop/ImperialAIAutomation",
     )
 )
 
