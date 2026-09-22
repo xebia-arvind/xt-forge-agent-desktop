@@ -47,6 +47,7 @@ from panels.feature import FeaturePanel
 from panels.jobs import JobsPanel
 from panels.manual_tests import ManualTestsPanel
 from panels.plan import PlanPanel
+from panels.pr_analysis import PRAnalysisPanel
 from panels.review import ReviewPanel
 from panels.worklist import WorklistPanel
 
@@ -61,6 +62,7 @@ NAV_ITEMS = [
     ("plan",         "Plan",         "pipeline",  "diagram-3"),
     ("review",       "Review",       "pipeline",  "search"),
     ("execute",      "Execute",      "pipeline",  "play-fill"),
+    ("pr_analysis",  "PR Analysis",  "tools",     "git"),
 ]
 
 
@@ -172,6 +174,10 @@ class MainWindow(QMainWindow):
         for slug, label, kind, icon_name in NAV_ITEMS:
             if kind == "pipeline":
                 self._add_nav_item(slug, label, icon_name)
+        self._add_nav_header("TOOLS")
+        for slug, label, kind, icon_name in NAV_ITEMS:
+            if kind == "tools":
+                self._add_nav_item(slug, label, icon_name)
 
         self.sidebar.currentRowChanged.connect(self._nav_changed)
         body_layout.addWidget(self.sidebar)
@@ -190,9 +196,12 @@ class MainWindow(QMainWindow):
         self._panels["plan"] = PlanPanel(self.api)
         self._panels["review"] = ReviewPanel(self.api)
         self._panels["execute"] = ExecuteContainer(self.api)
+        # Standalone tool — does not participate in the Jira set_job fan-out
+        # and takes no api client (talks to a local shell script instead).
+        self._panels["pr_analysis"] = PRAnalysisPanel()
 
         # Stack order mirrors nav order — Jobs first so it's the default view.
-        for slug in ("jobs", "worklist", "feature", "manual_tests", "plan", "review", "execute"):
+        for slug in ("jobs", "worklist", "feature", "manual_tests", "plan", "review", "execute", "pr_analysis"):
             self.stack.addWidget(self._panels[slug])
 
         # Wire the worklist → pipeline transition
