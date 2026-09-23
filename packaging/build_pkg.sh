@@ -42,6 +42,7 @@ rm -f "$COMPONENT" "$DIST_PKG"
 
 pkgbuild \
   --root "$STAGE" \
+  --component-plist "$HERE/packaging/component.plist" \
   --scripts "$SCRIPTS_DIR" \
   --install-location /Applications \
   --identifier com.xtforge.desktop \
