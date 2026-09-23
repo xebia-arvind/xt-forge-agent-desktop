@@ -13,7 +13,7 @@ from panels._visuals import badge, bullet_list, card, scenario_type_badge
 
 
 class ManualTestsPanel(StagePanelBase):
-    TITLE = "📝 Manual Tests"
+    TITLE = "📝 Test Design"
     STAGE_KEY = "manual-tests"
     OUTPUT_FIELD = "stage_manual_tests_output"
     AGENT_KEY = "manual_test_author"

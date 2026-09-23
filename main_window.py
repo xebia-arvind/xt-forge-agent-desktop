@@ -1,12 +1,12 @@
 """
 Top-level QMainWindow — top bar, left sidebar, stacked content area.
 
-Phase 7.3 — Mirrors the Phase 6.4 Django sidebar exactly:
-  ANALYTICS  → Jobs (default landing)
-  WORKFLOW   → Worklist
-  PIPELINE   → Feature, Manual Tests, Plan, Review, Execute
+Sidebar layout:
+  WORKFLOW  → Worklist (default landing)
+  PIPELINE  → Feature, Test Design, Plan, Review, Execute, Execution Summary
 
-Config, Generate, and Healer are intentionally not present — same as Django.
+Test Design hosts a segmented toggle so PR Analysis lives inside it
+instead of getting its own sidebar entry.
 """
 from __future__ import annotations
 
@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QMainWindow,
     QMessageBox,
+    QProgressDialog,
     QPushButton,
     QStackedWidget,
     QVBoxLayout,
@@ -34,6 +35,7 @@ from PySide6.QtWidgets import (
 import auth_store
 from api_client import APIClient, APIError, AuthError
 from ui.icons import bi_icon
+from workers.agent_run_thread import AgentRunThread
 
 
 def _logo_asset_path() -> Path:
@@ -42,28 +44,40 @@ def _logo_asset_path() -> Path:
     _asset_path helper in panels/_two_column.py."""
     base = Path(getattr(sys, "_MEIPASS", "")) if getattr(sys, "_MEIPASS", None) else Path(__file__).resolve().parent
     return base / "ui" / "images" / "xt-forge-logo.png"
+
+
+def _xtforge_display_name(api: APIClient) -> str:
+    """Text for the top-bar identity pill. Prefers the xtforge.xebia.in
+    identity (real user); falls back to the Django email if for some
+    reason xtforge_login() didn't populate the identity (e.g. legacy
+    single-login code path)."""
+    identity = getattr(api, "xtforge_identity", None)
+    if identity is not None and identity.display_name:
+        return identity.display_name
+    return api.state.email or ""
 from panels.execute_container import ExecuteContainer
 from panels.feature import FeaturePanel
 from panels.jobs import JobsPanel
-from panels.manual_tests import ManualTestsPanel
 from panels.plan import PlanPanel
-from panels.pr_analysis import PRAnalysisPanel
 from panels.review import ReviewPanel
+from panels.test_design_container import TestDesignContainer
 from panels.worklist import WorklistPanel
 
 
 # Phase 19 — tuple grew from 3 to 4: (slug, label, section, bootstrap-icon-name).
 # Emoji removed from labels; icons come from `ui.icons.bi_icon()`.
 NAV_ITEMS = [
-    ("jobs",         "Jobs",         "analytics", "graph-up-arrow"),
-    ("worklist",     "Worklist",     "workflow",  "folder2"),
-    ("feature",      "Feature",      "pipeline",  "puzzle"),
-    ("manual_tests", "Manual Tests", "pipeline",  "journal-text"),
-    ("plan",         "Plan",         "pipeline",  "diagram-3"),
-    ("review",       "Review",       "pipeline",  "search"),
-    ("execute",      "Execute",      "pipeline",  "play-fill"),
-    ("pr_analysis",  "PR Analysis",  "tools",     "git"),
+    ("worklist",     "Worklist",          "workflow",  "folder2"),
+    ("feature",      "Feature",           "pipeline",  "puzzle"),
+    ("manual_tests", "Test Design",       "pipeline",  "journal-text"),
+    ("review",       "Review",            "pipeline",  "search"),
+    ("execute",      "Execute",           "pipeline",  "play-fill"),
+    ("jobs",         "Execution Summary", "pipeline",  "graph-up-arrow"),
 ]
+
+# Plan runs in the background between Test Design and Review — no sidebar
+# entry, no user-visible panel. The instance still lives in self._panels so
+# set_job hydration works, but it's never shown.
 
 
 class MainWindow(QMainWindow):
@@ -114,20 +128,23 @@ class MainWindow(QMainWindow):
         top_layout.addWidget(brand)
         top_layout.addStretch(1)
 
-        client_label_prefix = QLabel("Client:")
+        client_label_prefix = QLabel("Project:")
         client_label_prefix.setObjectName("hint")
         top_layout.addWidget(client_label_prefix)
 
-        # Phase 18 — replaces the read-only client pill with a switching
-        # dropdown. Populated on init via /auth/my-clients/. Selecting a
-        # different item calls /auth/pick-client/ and refreshes the panel.
+        # Header project dropdown. Populated from the xtforge.xebia.in
+        # projects list the user picked from at login. Switching entries
+        # updates api.xtforge_project so downstream reads pick it up.
         self.client_combo = QComboBox()
         self.client_combo.setObjectName("clientPicker")
         self.client_combo.setMinimumWidth(180)
-        self.client_combo.activated.connect(self._on_client_switch)
+        self.client_combo.activated.connect(self._on_project_switch)
         top_layout.addWidget(self.client_combo)
 
-        self.email_label = QLabel(self.api.state.email or "")
+        # Top-bar identity pill shows the xtforge.xebia.in user (real
+        # end-user identity) rather than the hard-coded Django email
+        # used for the silent internal login.
+        self.email_label = QLabel(_xtforge_display_name(self.api))
         self.email_label.setObjectName("emailPill")
         top_layout.addWidget(self.email_label)
 
@@ -161,11 +178,6 @@ class MainWindow(QMainWindow):
         self.sidebar.setObjectName("sidebar")
         self.sidebar.setFixedWidth(220)
 
-        # Phase 7.3 — Analytics on top, Jobs as the landing row.
-        self._add_nav_header("ANALYTICS")
-        for slug, label, kind, icon_name in NAV_ITEMS:
-            if kind == "analytics":
-                self._add_nav_item(slug, label, icon_name)
         self._add_nav_header("WORKFLOW")
         for slug, label, kind, icon_name in NAV_ITEMS:
             if kind == "workflow":
@@ -174,11 +186,6 @@ class MainWindow(QMainWindow):
         for slug, label, kind, icon_name in NAV_ITEMS:
             if kind == "pipeline":
                 self._add_nav_item(slug, label, icon_name)
-        self._add_nav_header("TOOLS")
-        for slug, label, kind, icon_name in NAV_ITEMS:
-            if kind == "tools":
-                self._add_nav_item(slug, label, icon_name)
-
         self.sidebar.currentRowChanged.connect(self._nav_changed)
         body_layout.addWidget(self.sidebar)
 
@@ -192,16 +199,15 @@ class MainWindow(QMainWindow):
         self._panels["jobs"] = JobsPanel(self.api)
         self._panels["worklist"] = WorklistPanel(self.api)
         self._panels["feature"] = FeaturePanel(self.api)
-        self._panels["manual_tests"] = ManualTestsPanel(self.api)
+        self._panels["manual_tests"] = TestDesignContainer(self.api)
         self._panels["plan"] = PlanPanel(self.api)
         self._panels["review"] = ReviewPanel(self.api)
         self._panels["execute"] = ExecuteContainer(self.api)
-        # Standalone tool — does not participate in the Jira set_job fan-out
-        # and takes no api client (talks to a local shell script instead).
-        self._panels["pr_analysis"] = PRAnalysisPanel()
 
-        # Stack order mirrors nav order — Jobs first so it's the default view.
-        for slug in ("jobs", "worklist", "feature", "manual_tests", "plan", "review", "execute", "pr_analysis"):
+        # Stack order mirrors sidebar order (Worklist is the landing panel).
+        # PR Analysis lives inside Test Design's segmented toggle now — it
+        # has no standalone sidebar entry.
+        for slug in ("worklist", "feature", "manual_tests", "plan", "review", "execute", "jobs"):
             self.stack.addWidget(self._panels[slug])
 
         # Wire the worklist → pipeline transition
@@ -220,79 +226,67 @@ class MainWindow(QMainWindow):
         if hasattr(self._panels["jobs"], "job_opened"):
             self._panels["jobs"].job_opened.connect(self._on_job_opened_from_dashboard)
 
-        # Initial state — Jobs is the landing panel (row 1 = first selectable
-        # row after the ANALYTICS header at row 0).
+        # Initial state — Worklist is the landing panel (row 1 = first
+        # selectable row after the WORKFLOW header at row 0). Worklist
+        # auto-loads via its showEvent, so no explicit reload here.
         self.sidebar.setCurrentRow(1)
-        self._panels["jobs"].reload() if hasattr(self._panels["jobs"], "reload") else None
 
-        # Phase 18 — populate the header client dropdown once the UI is up.
-        self._populate_client_combo()
+        # Populate the header project dropdown once the UI is up.
+        self._populate_project_combo()
 
-    def _populate_client_combo(self) -> None:
-        """Fetch /auth/my-clients/ and populate the top-right dropdown.
-        Best-effort — a failure here doesn't block the shell; we fall
-        back to a single-item combo showing the active client name."""
+    def _populate_project_combo(self) -> None:
+        """Populate the header project dropdown from the xtforge.xebia.in
+        projects list. Preselects whatever the user picked in the login
+        picker dialog. Falls back to a re-fetch if the client didn't
+        cache the projects on itself."""
         try:
-            data = self.api.list_my_clients()
-            clients = list(data.get("clients") or [])
+            projects = self.api.list_xtforge_projects()
         except (APIError, AuthError):
-            clients = []
+            projects = []
 
-        active_id = str(self.api.state.client_secret or "")
-        active_name = self.api.state.client_name or ""
+        active_project = self.api.xtforge_project or {}
+        active_id = str(active_project.get("id") or "")
 
-        # If we couldn't fetch, at least show the active client so the
+        # If we couldn't fetch, at least show the active project so the
         # header isn't blank.
-        if not clients and active_name:
-            clients = [{"id": active_id, "name": active_name, "slug": ""}]
+        if not projects and active_project:
+            projects = [active_project]
 
-        self._client_options = clients
+        self._client_options = projects
 
         self.client_combo.blockSignals(True)
         self.client_combo.clear()
         selected_index = 0
-        for i, c in enumerate(clients):
-            self.client_combo.addItem(c.get("name") or c.get("slug") or c.get("id") or "—",
-                                      userData=str(c.get("id") or ""))
-            if str(c.get("id") or "") == active_id:
+        for i, p in enumerate(projects):
+            display = str(p.get("projectName") or p.get("id") or "—")
+            self.client_combo.addItem(display, userData=str(p.get("id") or ""))
+            if str(p.get("id") or "") == active_id:
                 selected_index = i
         self.client_combo.setCurrentIndex(selected_index)
-        # Single-client tenants shouldn't invite a pointless click.
-        self.client_combo.setEnabled(len(clients) > 1)
+        # Single-project users shouldn't invite a pointless click.
+        self.client_combo.setEnabled(len(projects) > 1)
         self.client_combo.blockSignals(False)
 
-    def _on_client_switch(self, index: int) -> None:
-        """Header dropdown activated by the user. Swap tenants and refresh
-        whatever panel is currently visible."""
+    def _on_project_switch(self, index: int) -> None:
+        """Header dropdown activated by the user. Swap the active
+        xtforge.xebia.in project and clear any in-flight job state."""
         new_id = str(self.client_combo.itemData(index) or "")
-        prev_id = str(self.api.state.client_secret or "")
+        prev_id = str((self.api.xtforge_project or {}).get("id") or "")
         if not new_id or new_id == prev_id:
             return
-        try:
-            self.api.pick_client(new_id)
-        except (APIError, AuthError) as exc:
-            # Revert the combo to the previous selection and surface a
-            # modal — silent failure would leave the operator staring at
-            # the wrong client name.
-            QMessageBox.warning(
-                self, "Client switch failed",
-                f"Could not switch client: {exc}\n\nStaying on the "
-                "previous tenant.",
-            )
-            self._populate_client_combo()
+
+        new_project = None
+        for p in self._client_options:
+            if str(p.get("id") or "") == new_id:
+                new_project = p
+                break
+        if new_project is None:
             return
 
-        # Persist the new session so a keychain re-hydrate doesn't fall
-        # back to a stale token.
-        auth_store.save_session(
-            access=self.api.state.access,
-            refresh=self.api.state.refresh,
-            email=self.api.state.email,
-            client_name=self.api.state.client_name,
-            client_secret=self.api.state.client_secret,
-        )
-        # Clear the current job — it belonged to the previous tenant and
-        # its id won't resolve under the new JWT.
+        self.api.set_xtforge_project(new_project)
+
+        # Clear the current job — it belonged to the previous project
+        # scope and probably doesn't apply here.
         self.current_job_id = ""
         self.current_jira_key = ""
         for slug in ("feature", "manual_tests", "plan", "review", "execute"):
@@ -363,8 +357,111 @@ class MainWindow(QMainWindow):
         order = ["feature", "manual_tests", "plan", "review", "execute"]
         for i, slug in enumerate(order):
             if self._panels.get(slug) is current_widget and i + 1 < len(order):
-                self._select_slug(order[i + 1])
+                next_slug = order[i + 1]
+                # Plan has no sidebar entry — it runs headlessly between
+                # Test Design and Review. When Test Design approves we
+                # generate the plan AND the artifacts in the background,
+                # then land the user on the Review panel with the
+                # artifacts already visible for inspection.
+                if next_slug == "plan":
+                    self._auto_generate_artifact_then_review()
+                else:
+                    self._select_slug(next_slug)
                 return
+
+    # ------------------------------------------------------------------
+    # Background artifact generation — invoked after Test Design's Approve.
+    # Two-phase pipeline behind a single "Generating Artifact" progress
+    # dialog:
+    #   1. Run Plan agent          -> approve_stage("plan")
+    #   2. Run Artifacts agent     -> re-hydrate Review, land on Review
+    # Review is intentionally NOT auto-approved — the user should inspect
+    # the generated artifacts before pushing forward.
+    def _auto_generate_artifact_then_review(self) -> None:
+        if not self.current_job_id:
+            return
+
+        self._artifact_progress = QProgressDialog(
+            "Preparing the plan for artifact generation…",
+            None, 0, 0, self,
+        )
+        self._artifact_progress.setWindowTitle("Generating Artifact")
+        self._artifact_progress.setLabelText(
+            "Preparing the plan for artifact generation…\n"
+            "This usually takes 30–90 seconds."
+        )
+        self._artifact_progress.setWindowModality(Qt.ApplicationModal)
+        self._artifact_progress.setCancelButton(None)
+        self._artifact_progress.setMinimumDuration(0)
+        self._artifact_progress.setAutoClose(False)
+        self._artifact_progress.setAutoReset(False)
+        self._artifact_progress.setMinimumWidth(360)
+        self._artifact_progress.show()
+
+        self._plan_thread = AgentRunThread(
+            self.api, self.current_job_id, "plan", parent=self
+        )
+        self._plan_thread.succeeded.connect(self._on_plan_run_succeeded)
+        self._plan_thread.failed.connect(self._on_plan_run_failed)
+        self._plan_thread.start()
+
+    def _on_plan_run_succeeded(self, _result) -> None:
+        # Backend stored plan output; approve it, then kick off artifact
+        # generation without dropping the modal.
+        try:
+            self.api.approve_stage(self.current_job_id, "plan")
+        except APIError as exc:
+            self._close_artifact_progress()
+            QMessageBox.critical(self, "Plan approve failed", str(exc))
+            return
+        self._update_artifact_progress(
+            "Generating test artifact…\n"
+            "This usually takes 30–90 seconds."
+        )
+        self._artifact_thread = AgentRunThread(
+            self.api, self.current_job_id, "artifacts", parent=self
+        )
+        self._artifact_thread.succeeded.connect(self._on_artifact_run_succeeded)
+        self._artifact_thread.failed.connect(self._on_artifact_run_failed)
+        self._artifact_thread.start()
+
+    def _on_plan_run_failed(self, message: str) -> None:
+        self._close_artifact_progress()
+        QMessageBox.critical(
+            self,
+            "Plan agent failed",
+            f"The Plan step failed and artifact generation did not start.\n\n{message}",
+        )
+
+    def _on_artifact_run_succeeded(self, _result) -> None:
+        # Re-hydrate Review so its scroll area picks up the newly-generated
+        # artifacts on paint, then land the user there.
+        review_panel = self._panels.get("review")
+        if review_panel is not None and hasattr(review_panel, "set_job"):
+            review_panel.set_job(self.current_job_id, self.current_jira_key)
+        self._close_artifact_progress()
+        self._select_slug("review")
+
+    def _on_artifact_run_failed(self, message: str) -> None:
+        self._close_artifact_progress()
+        QMessageBox.critical(
+            self,
+            "Artifact generation failed",
+            f"The artifact agent failed. You can retry from the Review panel.\n\n{message}",
+        )
+        # Still land on Review — user can click Run agent to retry there.
+        self._select_slug("review")
+
+    def _update_artifact_progress(self, text: str) -> None:
+        dlg = getattr(self, "_artifact_progress", None)
+        if dlg is not None:
+            dlg.setLabelText(text)
+
+    def _close_artifact_progress(self) -> None:
+        dlg = getattr(self, "_artifact_progress", None)
+        if dlg is not None:
+            dlg.close()
+            self._artifact_progress = None
 
     def _select_slug(self, slug: str) -> None:
         for i in range(self.sidebar.count()):

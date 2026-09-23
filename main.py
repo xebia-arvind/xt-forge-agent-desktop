@@ -2,10 +2,11 @@
 Entry point.
 
 Flow:
-    1. Load QSettings. If no backend URL saved → show SetupPanel.
-    2. Rehydrate keychain session into APIClient. If access token present →
-       jump to MainWindow (calls may 401; APIClient will bounce to login).
-    3. Otherwise → show LoginPanel.
+    1. Backend URL is hard-coded to AGENT_BACKEND_URL (SetupPanel is kept
+       around but no longer routed to on launch).
+    2. LoginPanel handles the dual-login (xtforge.xebia.in + hard-coded
+       Django agent).
+    3. On success → MainWindow.
 
 Only one widget is visible at a time. Login/setup are their own top-level
 widgets; the pipeline UI lives inside MainWindow.
@@ -25,7 +26,17 @@ from bootstrap import ensure_dependencies
 from main_window import MainWindow
 from panels.login import LoginPanel
 from panels.pick_client import ClientPickerDialog
+from panels.pick_project import XTForgeProjectPickerDialog
 from panels.setup import SetupPanel
+from self_installer import install_and_relaunch_if_needed
+
+
+# The Django agent backend is now baked in. Env-var override
+# (XTFORGE_AGENT_BACKEND) lets ops repoint without a rebuild.
+AGENT_BACKEND_URL = os.environ.get(
+    "XTFORGE_AGENT_BACKEND",
+    "https://xtforge-agent.xebia.in",
+)
 
 
 def _load_stylesheet() -> str:
@@ -56,11 +67,9 @@ class AppShell:
         self.setup_panel.configured.connect(self._on_configured)
 
     def start(self) -> None:
-        url = app_settings.get_backend_url()
-        if not url:
-            self.stack.setCurrentWidget(self.setup_panel)
-        else:
-            self._show_login(url)
+        # Backend URL is hard-coded now — SetupPanel is only reachable via
+        # `_back_to_setup()`, which the login screen currently hides.
+        self._show_login(AGENT_BACKEND_URL)
         self.stack.show()
 
     def _on_configured(self, url: str) -> None:
@@ -78,6 +87,7 @@ class AppShell:
         panel = LoginPanel(self.api)
         panel.logged_in.connect(self._show_main)
         panel.needs_pick.connect(self._show_client_picker)
+        panel.needs_project_pick.connect(self._show_project_picker)
         panel.server_change_requested.connect(self._back_to_setup)
         self._replace(panel)
         self.login_panel = panel
@@ -88,6 +98,15 @@ class AppShell:
         # and can jump to MainWindow. On cancel we stay on the LoginPanel
         # so the operator can retry / change credentials.
         dlg = ClientPickerDialog(self.api, list(clients), parent=self.stack)
+        dlg.picked.connect(self._show_main)
+        dlg.exec()
+
+    def _show_project_picker(self, projects) -> None:
+        # Login succeeded on both backends; user still needs to pick which
+        # xtforge.xebia.in project to work in. Blocks the shell until the
+        # user selects one. On cancel we stay on the login screen so they
+        # can retry.
+        dlg = XTForgeProjectPickerDialog(self.api, list(projects), parent=self.stack)
         dlg.picked.connect(self._show_main)
         dlg.exec()
 
@@ -103,8 +122,7 @@ class AppShell:
 
     def _on_logout(self) -> None:
         # Force a fresh login screen.
-        url = app_settings.get_backend_url() or "http://127.0.0.1:8000"
-        self._show_login(url)
+        self._show_login(AGENT_BACKEND_URL)
 
     def _replace(self, widget) -> None:
         # Remove any existing non-setup widget, add the new one, switch to it.
@@ -120,6 +138,13 @@ class AppShell:
 
 
 def main() -> int:
+    # macOS silent self-installer. If we're running from a mounted DMG
+    # (/Volumes/…), copy the bundle to ~/Applications, strip quarantine,
+    # relaunch from there, and quit. Runs BEFORE QApplication so no UI
+    # window flashes on-screen for the DMG-mounted instance.
+    if install_and_relaunch_if_needed():
+        return 0
+
     # High-DPI is on by default in Qt 6; no attribute toggling needed.
     app = QApplication(sys.argv)
     app.setApplicationName("XT-Forge Desktop")

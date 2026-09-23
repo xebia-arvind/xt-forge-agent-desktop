@@ -156,6 +156,34 @@ class Session:
     available_clients: list = field(default_factory=list)
 
 
+# The external Spring Boot auth service the login screen now authenticates
+# against. This is a completely separate backend from the Django agent — see
+# `xtforge_login` below.
+XTFORGE_AUTH_URL = "https://xtforge.xebia.in"
+
+
+@dataclass
+class XTForgeIdentity:
+    """User-facing identity returned by `xtforge.xebia.in/login`. Populated
+    by APIClient.xtforge_login() and read by the top-bar pill."""
+    email: str = ""          # username the user typed (echoed back)
+    firstname: str = ""
+    lastname: str = ""
+    customer_name: str = ""
+    role: str = ""
+    token: str = field(default="", repr=False)         # JWT for xtforge.xebia.in
+    session_id: str = field(default="", repr=False)    # UUID for x-session-id
+    active_config_id: str = ""
+
+    @property
+    def display_name(self) -> str:
+        """Rendered on the top-bar pill: "Xebia Test · Xebia"."""
+        full = f"{self.firstname} {self.lastname}".strip()
+        if full and self.customer_name:
+            return f"{full} · {self.customer_name}"
+        return full or self.customer_name or self.email
+
+
 class APIClient:
     """
     Wraps `requests.Session` with a JWT-aware `_authed_request`.
@@ -184,6 +212,109 @@ class APIClient:
         else:
             self.session.verify = bundle
         self.state = Session()
+        # Populated by xtforge_login(). Read by main_window's top-bar pill
+        # to show the real user identity (rather than the hard-coded
+        # Django email used for the internal backend session).
+        self.xtforge_identity: Optional[XTForgeIdentity] = None
+        # The xtforge.xebia.in project the user picked at login. Read by
+        # the header project dropdown (in place of the old client picker).
+        self.xtforge_project: Optional[Dict[str, Any]] = None
+
+    # ------------------------------------------------------------------
+    # External auth — xtforge.xebia.in (Spring Boot)
+    # ------------------------------------------------------------------
+    def xtforge_login(self, username: str, password: str) -> XTForgeIdentity:
+        """POST https://xtforge.xebia.in/login. Populates self.xtforge_identity.
+
+        The endpoint's request key is `email` even though it accepts a
+        username value (confirmed by probe; sending an email-shaped value
+        returns "User Not Found", sending the username returns 200).
+        """
+        url = f"{XTFORGE_AUTH_URL.rstrip('/')}/login"
+        try:
+            resp = self.session.post(
+                url,
+                json={"email": username, "password": password},
+                headers={"Content-Type": "application/json",
+                         "Accept": "application/json"},
+                timeout=self.timeout,
+            )
+        except requests.RequestException as exc:
+            raise APIError(0, f"Could not reach {url}: {exc}", url) from exc
+
+        if resp.status_code == 401:
+            # Endpoint returns {"message": "...", "status": "..."} on auth
+            # failure. Surface the message field so the login screen can
+            # show "Bad Credentials" / "User Not Found" verbatim.
+            try:
+                body = resp.json()
+                detail = str(body.get("message") or body.get("status") or resp.text)
+            except ValueError:
+                detail = resp.text or "Unauthorized"
+            raise AuthError(401, detail, url)
+        if resp.status_code != 200:
+            raise APIError(resp.status_code, resp.text, url)
+
+        try:
+            body = resp.json()
+        except ValueError:
+            raise AuthError(resp.status_code, "Login response was not JSON", url)
+
+        identity = XTForgeIdentity(
+            email=str(body.get("email") or username),
+            firstname=str(body.get("firstname") or "").strip(),
+            lastname=str(body.get("lastname") or "").strip(),
+            customer_name=str(body.get("customerName") or "").strip(),
+            role=str(body.get("role") or "") if body.get("role") else "",
+            token=str(body.get("token") or ""),
+            session_id=str(body.get("sessionId") or ""),
+            active_config_id=str(body.get("activeConfigId") or ""),
+        )
+        if not identity.token or not identity.session_id:
+            raise AuthError(500, "Login response missing token/sessionId", url)
+        self.xtforge_identity = identity
+        return identity
+
+    def xtforge_auth_headers(self) -> Dict[str, str]:
+        """Headers for authenticated calls to xtforge.xebia.in/api/…
+        Returns an empty dict if xtforge_login() hasn't been called yet."""
+        if self.xtforge_identity is None:
+            return {}
+        return {
+            "Authorization": f"Bearer {self.xtforge_identity.token}",
+            "x-session-id": self.xtforge_identity.session_id,
+        }
+
+    def list_xtforge_projects(self) -> List[Dict[str, Any]]:
+        """GET https://xtforge.xebia.in/api/projects with customerName header.
+        Returns the raw list from the response (each entry has id,
+        projectName, projectDescription, projectOwner, customerName,
+        teamMembers, projectType, createdBy, createdDate).
+        """
+        if self.xtforge_identity is None:
+            raise AuthError(401, "xtforge_login must be called first", "")
+        url = f"{XTFORGE_AUTH_URL.rstrip('/')}/api/projects"
+        headers = self.xtforge_auth_headers()
+        headers["customerName"] = self.xtforge_identity.customer_name
+        headers["Accept"] = "application/json"
+        try:
+            resp = self.session.get(url, headers=headers, timeout=self.timeout)
+        except requests.RequestException as exc:
+            raise APIError(0, f"Could not reach {url}: {exc}", url) from exc
+        if resp.status_code == 401:
+            raise AuthError(401, resp.text, url)
+        if resp.status_code != 200:
+            raise APIError(resp.status_code, resp.text, url)
+        try:
+            body = resp.json()
+        except ValueError:
+            raise APIError(resp.status_code, "Projects response was not JSON", url)
+        return list(body) if isinstance(body, list) else []
+
+    def set_xtforge_project(self, project: Dict[str, Any]) -> None:
+        """Persist the user's project selection on the client so panels
+        (header dropdown, worklist, etc.) can read it."""
+        self.xtforge_project = dict(project) if project else None
 
     # ------------------------------------------------------------------
     # Auth

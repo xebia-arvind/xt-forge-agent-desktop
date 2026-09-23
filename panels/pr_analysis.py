@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Optional
 
 from PySide6.QtCore import QProcess, QProcessEnvironment, Qt, QTimer, QRegularExpression
-from PySide6.QtGui import QRegularExpressionValidator
+from PySide6.QtGui import QFont, QRegularExpressionValidator
 from PySide6.QtWidgets import (
     QComboBox,
     QFrame,
@@ -32,6 +32,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QSizePolicy,
+    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -128,13 +129,14 @@ class PRAnalysisPanel(QWidget):
         self.card.setObjectName("statusCard")
         self.card.setFrameShape(QFrame.StyledPanel)
         card_layout = QVBoxLayout(self.card)
-        card_layout.setContentsMargins(24, 24, 24, 24)
-        card_layout.setSpacing(10)
+        card_layout.setContentsMargins(20, 18, 20, 18)
+        card_layout.setSpacing(6)
 
         self.card_title = QLabel("Ready")
         self.card_title.setStyleSheet(
-            "font-size: 18px; font-weight: 700; background: transparent; border: none;"
+            "font-size: 17px; font-weight: 700; background: transparent; border: none;"
         )
+        self.card_title.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         card_layout.addWidget(self.card_title)
 
         self.card_body = QLabel(
@@ -145,6 +147,7 @@ class PRAnalysisPanel(QWidget):
         self.card_body.setStyleSheet(
             "font-size: 13px; color: #4b5563; background: transparent; border: none;"
         )
+        self.card_body.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         card_layout.addWidget(self.card_body)
 
         self.card_link = QLabel("")
@@ -153,13 +156,31 @@ class PRAnalysisPanel(QWidget):
         self.card_link.setOpenExternalLinks(True)
         self.card_link.setVisible(False)
         self.card_link.setStyleSheet(
-            "font-size: 14px; font-weight: 600; background: transparent; border: none;"
+            "font-size: 13px; font-weight: 600; background: transparent; border: none;"
         )
+        self.card_link.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         card_layout.addWidget(self.card_link)
 
-        card_layout.addStretch(1)
-        self.card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        outer.addWidget(self.card, 1)
+        # Inline report viewer — populated with the markdown file on success.
+        # Qt renders the markdown natively (headings, tables, lists, code),
+        # no WebEngine dependency needed. minimumHeight ensures the card
+        # grows to a useful size when the report is shown; when hidden,
+        # the card collapses to its intrinsic content height.
+        self.report_view = QTextEdit()
+        self.report_view.setReadOnly(True)
+        self.report_view.setVisible(False)
+        self.report_view.setStyleSheet(
+            "QTextEdit { background-color: #ffffff; color: #111827; "
+            "border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; }"
+        )
+        self.report_view.setFont(QFont("-apple-system, Helvetica Neue, Arial", 12))
+        self.report_view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.report_view.setMinimumHeight(400)
+        card_layout.addWidget(self.report_view, 1)
+
+        self.card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        outer.addWidget(self.card)
+        outer.addStretch(1)
 
         self._set_state("idle")
 
@@ -297,9 +318,7 @@ class PRAnalysisPanel(QWidget):
     def _render_running_body(self) -> None:
         mm, ss = divmod(self._elapsed_sec, 60)
         self.card_body.setText(
-            f"Analyzing PR #{self._pr_id} against the Imperial AI Automation "
-            f"project.\nThis usually takes 1–3 minutes.\n\n"
-            f"Elapsed {mm:02d}:{ss:02d}"
+            f"This usually takes 1–3 minutes. Elapsed {mm:02d}:{ss:02d}"
         )
 
     # ------------------------------------------------------------------
@@ -333,26 +352,25 @@ class PRAnalysisPanel(QWidget):
                 "Enter a PR ID above and click Run Analysis to generate a "
                 "test-case report."
             )
+            self.card_body.setVisible(True)
             self.card_link.setVisible(False)
+            self.report_view.setVisible(False)
             return
 
         if state == "running":
             self.card_title.setText(f"Analyzing PR #{self._pr_id}…")
             self._render_running_body()
+            self.card_body.setVisible(True)
             self.card_link.setVisible(False)
+            self.report_view.setVisible(False)
             return
 
         if state == "success" and html_path is not None:
             self.card_title.setText(f"Analysis complete — PR #{self._pr_id}")
-            self.card_body.setText(
-                "The test-case report was generated successfully. "
-                "Click below to open it in your browser."
-            )
-            self.card_link.setText(
-                f'<a href="file://{html_path}" style="color: #065f46;">'
-                f"Open PR-{self._pr_id}.html</a>"
-            )
-            self.card_link.setVisible(True)
+            self.card_body.setText("Report below")
+            self.card_body.setVisible(True)
+            self.card_link.setVisible(False)
+            self._load_report_view()
             return
 
         if state == "failed":
@@ -360,5 +378,33 @@ class PRAnalysisPanel(QWidget):
             self.card_body.setText(
                 reason or "The wrapper reported a failure."
             )
+            self.card_body.setVisible(True)
             self.card_link.setVisible(False)
+            self.report_view.setVisible(False)
             return
+
+    def _load_report_view(self) -> None:
+        """Populate the inline report viewer from the markdown source the
+        wrapper wrote alongside the HTML. Markdown renders more cleanly in
+        QTextEdit than the wrapper's HTML (which uses CSS Qt doesn't fully
+        support)."""
+        html_path = self._expected_html_path
+        if html_path is None:
+            self.report_view.setVisible(False)
+            return
+
+        md_path = html_path.with_suffix(".md")
+        try:
+            if md_path.exists():
+                self.report_view.setMarkdown(md_path.read_text(encoding="utf-8"))
+            elif html_path.exists():
+                self.report_view.setHtml(html_path.read_text(encoding="utf-8"))
+            else:
+                self.report_view.setVisible(False)
+                return
+        except OSError:
+            self.report_view.setVisible(False)
+            return
+
+        self.report_view.setVisible(True)
+        self.report_view.moveCursor(self.report_view.textCursor().Start)

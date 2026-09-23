@@ -141,7 +141,7 @@ class ManualExecutePanel(QWidget):
         header.setObjectName("h1")
         outer.addWidget(header)
 
-        self.subheader = QLabel("Select a Jira ticket from Worklist first.")
+        self.subheader = QLabel("Select a Ticket from Worklist first.")
         self.subheader.setObjectName("hint")
         self.subheader.setWordWrap(True)
         outer.addWidget(self.subheader)
@@ -165,12 +165,18 @@ class ManualExecutePanel(QWidget):
         scroll.setWidget(body_holder)
         outer.addWidget(scroll, 1)
 
-        # Run row
+        # Run row.
+        # Headless / Headed radios are kept in the widget tree (checked
+        # state defaults to Headless=True) but hidden — every manual run
+        # goes through headless mode. Restoring the toggle is a one-line
+        # `setVisible(True)` on both radios.
         run_row = QHBoxLayout()
         self.headless_radio = QRadioButton("Headless")
         self.headless_radio.setChecked(True)
+        self.headless_radio.setVisible(False)
         run_row.addWidget(self.headless_radio)
         self.headed_radio = QRadioButton("Headed (visible browser)")
+        self.headed_radio.setVisible(False)
         run_row.addWidget(self.headed_radio)
 
         self.run_btn = QPushButton("▶ Run once (manual)")
@@ -183,7 +189,7 @@ class ManualExecutePanel(QWidget):
         self.stop_btn.clicked.connect(self._stop_stream)
         run_row.addWidget(self.stop_btn)
 
-        self.push_btn = QPushButton("🚀 Push to Jira")
+        self.push_btn = QPushButton("🚀 Push")
         self.push_btn.setObjectName("success")
         self.push_btn.setEnabled(False)
         self.push_btn.setToolTip("Enabled after a GREEN manual run.")
@@ -308,7 +314,7 @@ class ManualExecutePanel(QWidget):
         if job_id:
             self.subheader.setText(f"Job {job_id}{suffix}")
         else:
-            self.subheader.setText("Select a Jira ticket from Worklist first.")
+            self.subheader.setText("Select a Ticket from Worklist first.")
         self.log_view.clear()
         self._stop_stream()
         self._runner_job_id = None

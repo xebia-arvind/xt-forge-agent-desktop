@@ -75,7 +75,7 @@ class StagePanelBase(QWidget):
         header_row.addWidget(self.model_badge)
         layout.addLayout(header_row)
 
-        self.subheader = QLabel("Select a Jira ticket from Worklist first.")
+        self.subheader = QLabel("Select a Ticket from Worklist first.")
         self.subheader.setObjectName("hint")
         layout.addWidget(self.subheader)
 

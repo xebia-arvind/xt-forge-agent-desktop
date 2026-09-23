@@ -75,7 +75,7 @@ class WorklistPanel(QWidget):
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(12)
 
-        header = QLabel("📋 Jira Worklist")
+        header = QLabel("📋 Worklist")
         header.setObjectName("h1")
         layout.addWidget(header)
 
@@ -99,7 +99,7 @@ class WorklistPanel(QWidget):
 
         # Issues table
         self.table = QTableWidget(0, 5)
-        self.table.setHorizontalHeaderLabels(["Key", "Summary", "Status", "Priority", "Actions"])
+        self.table.setHorizontalHeaderLabels(["ID", "Title", "Status", "Priority", "Actions"])
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(1, QHeaderView.Stretch)
         # Actions column (idx 4) — Phase 14 puts two buttons here (Start

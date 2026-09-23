@@ -1,5 +1,5 @@
 """
-Jobs dashboard — the desktop counterpart of the Django Jobs panel.
+Execution Summary — per-pipeline job history and re-open shortcuts.
 
 Ships Phase 7.1 of the desktop parity work: a landing page that shows every
 `GenerationJob` in the tenant with stage-wise progression pills, per-row
@@ -197,19 +197,29 @@ class JobsPanel(QWidget):
 
     job_opened = Signal(str, str, str)
 
-    _COLUMNS = ["Jira", "Feature", "Stage progression", "Iterations", "Last run", "Actions"]
+    _COLUMNS = ["ID", "Title", "Stage progression", "Iterations", "Last run", "Actions"]
 
     def __init__(self, api: APIClient, parent=None):
         super().__init__(parent)
         self.api = api
         self._jobs: List[Dict[str, Any]] = []
         self._filtered: List[Dict[str, Any]] = []
+        # First-show tracker: reload on the first showEvent so the panel
+        # hydrates without a manual Refresh click. Subsequent shows rely on
+        # the auto-refresh timer.
+        self._loaded_once = False
         self._build_ui()
         # Poll every 10s while any job is IN_PROGRESS.
         self._timer = QTimer(self)
         self._timer.setInterval(10_000)
         self._timer.timeout.connect(self._maybe_poll)
         self._timer.start()
+
+    def showEvent(self, event) -> None:
+        super().showEvent(event)
+        if not self._loaded_once:
+            self._loaded_once = True
+            self.reload()
 
     # ------------------------------------------------------------------
     # UI construction
@@ -220,7 +230,7 @@ class JobsPanel(QWidget):
         root.setSpacing(12)
 
         # Title row
-        title = QLabel("📈 Jobs Dashboard")
+        title = QLabel("📈 Execution Summary")
         title.setObjectName("h1")
         root.addWidget(title)
 
@@ -292,8 +302,8 @@ class JobsPanel(QWidget):
         self.table = QTableWidget(0, len(self._COLUMNS))
         self.table.setHorizontalHeaderLabels(self._COLUMNS)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)  # Feature grows
-        self.table.setColumnWidth(0, 100)   # Jira
+        self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)  # Title grows
+        self.table.setColumnWidth(0, 100)   # ID
         self.table.setColumnWidth(2, 240)   # Stage progression
         self.table.setColumnWidth(3, 90)    # Iterations
         self.table.setColumnWidth(4, 110)   # Last run
