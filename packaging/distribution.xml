@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <title>XT-Forge Agent</title>
+    <organization>com.xtforge</organization>
+    <!-- enable_currentUserHome=true tells macOS Installer.app to run
+         in user scope — no admin password prompt, and $HOME inside the
+         postinstall script points at the current operator's home dir. -->
+    <domains enable_currentUserHome="true"/>
+    <options customize="never" require-scripts="false" rootVolumeOnly="false"/>
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.xtforge.desktop"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="com.xtforge.desktop" visible="false">
+        <pkg-ref id="com.xtforge.desktop"/>
+    </choice>
+    <pkg-ref id="com.xtforge.desktop" version="0.1.0" onConclusion="none">XT-Forge-Component.pkg</pkg-ref>
+</installer-gui-script>

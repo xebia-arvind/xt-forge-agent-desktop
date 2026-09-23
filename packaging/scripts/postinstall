@@ -1,0 +1,33 @@
+#!/bin/bash
+# postinstall — runs after macOS Installer.app has extracted the payload
+# to /private/tmp/xt-forge-install/. Moves the .app into the current
+# user's ~/Applications, strips the Gatekeeper quarantine flag, and
+# launches it. Runs in user context (see distribution.xml
+# enable_currentUserHome="true") so $HOME is the operator's home dir
+# and no admin password is required.
+set +e
+
+STAGED_APP="/private/tmp/xt-forge-install/XT-Forge.app"
+DEST_DIR="$HOME/Applications"
+DEST_APP="$DEST_DIR/XT-Forge.app"
+
+mkdir -p "$DEST_DIR"
+
+# Replace any prior install so a fresh installer always wins.
+if [ -d "$DEST_APP" ]; then
+  rm -rf "$DEST_APP"
+fi
+
+cp -R "$STAGED_APP" "$DEST_APP"
+
+# Strip the download quarantine bit so future launches from
+# Launchpad/Spotlight don't re-hit "Apple could not verify..." dialog.
+xattr -dr com.apple.quarantine "$DEST_APP" 2>/dev/null
+
+# Clean up the staging directory.
+rm -rf /private/tmp/xt-forge-install
+
+# Launch the freshly-installed app.
+open -n "$DEST_APP"
+
+exit 0
