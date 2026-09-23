@@ -1,64 +1,44 @@
 #!/bin/bash
-# postinstall — runs after macOS Installer.app extracts the payload.
-# Moves the staged .app into the current user's ~/Applications,
-# strips the Gatekeeper quarantine flag, and launches it.
+# postinstall — runs after macOS Installer.app extracts XT-Forge.app
+# to the install destination. In user-scope mode (see distribution.xml
+# enable_currentUserHome="true") the pkg's declared install-location
+# of /Applications is transparently re-rooted to ~/Applications, so
+# the .app already lands in the right place.
 #
-# The Installer passes these positional args:
-#   $0  script name
-#   $1  full path to the .pkg being installed
-#   $2  installation destination path (with user-scope re-rooting
-#       applied when enable_currentUserHome="true")
-#   $3  installation volume
+# We just:
+#   1. Strip the Gatekeeper quarantine flag so future launches don't
+#      hit "Apple could not verify..." dialog.
+#   2. Launch the newly-installed app.
 #
-# Using $2 for the staged-app path is critical: with user-scope
-# install, absolute paths in --install-location get re-rooted under
-# $HOME, so a hard-coded "/private/tmp/..." wouldn't find the payload.
+# Installer positional args:
+#   $0 script name  $1 pkg path  $2 install-destination  $3 volume
 set +e
 
 INSTALL_DEST="$2"
-PAYLOAD_DIR="$INSTALL_DEST/xt-forge-install"
-STAGED_APP="$PAYLOAD_DIR/XT-Forge.app"
+APP_PATH="$INSTALL_DEST/XT-Forge.app"
 
-DEST_DIR="$HOME/Applications"
-DEST_APP="$DEST_DIR/XT-Forge.app"
+echo "[XT-Forge postinstall] INSTALL_DEST=$INSTALL_DEST HOME=$HOME USER=$USER"
 
-# Fallbacks in case $2 isn't what we expect on some macOS variants.
-if [ ! -d "$STAGED_APP" ]; then
-    for candidate in \
-        "$HOME/private/tmp/xt-forge-install/XT-Forge.app" \
-        "/private/tmp/xt-forge-install/XT-Forge.app" \
-        "$HOME/tmp/xt-forge-install/XT-Forge.app"
-    do
+# Defensive fallback: if $2 doesn't have the app (edge case on some
+# macOS variants), probe the two most likely locations.
+if [ ! -d "$APP_PATH" ]; then
+    for candidate in "$HOME/Applications/XT-Forge.app" "/Applications/XT-Forge.app"; do
         if [ -d "$candidate" ]; then
-            STAGED_APP="$candidate"
-            PAYLOAD_DIR="$(dirname "$candidate")"
+            APP_PATH="$candidate"
             break
         fi
     done
 fi
 
-if [ ! -d "$STAGED_APP" ]; then
-    echo "[XT-Forge postinstall] ERROR: staged app not found (INSTALL_DEST=$INSTALL_DEST, HOME=$HOME)" >&2
+if [ ! -d "$APP_PATH" ]; then
+    echo "[XT-Forge postinstall] ERROR: XT-Forge.app not found at $INSTALL_DEST or usual fallbacks" >&2
     exit 1
 fi
 
-mkdir -p "$DEST_DIR"
+xattr -dr com.apple.quarantine "$APP_PATH" 2>/dev/null
 
-# Replace any prior install so a fresh installer always wins.
-if [ -d "$DEST_APP" ]; then
-    rm -rf "$DEST_APP"
-fi
-
-cp -R "$STAGED_APP" "$DEST_APP"
-
-# Strip the download quarantine bit so future launches from
-# Launchpad/Spotlight don't re-hit "Apple could not verify..." dialog.
-xattr -dr com.apple.quarantine "$DEST_APP" 2>/dev/null
-
-# Clean up the staging directory.
-rm -rf "$PAYLOAD_DIR"
-
-# Launch the freshly-installed app.
-open -n "$DEST_APP"
+# `open -n` launches a fresh instance so the Installer's helper
+# process doesn't accidentally get the frontmost slot.
+open -n "$APP_PATH"
 
 exit 0

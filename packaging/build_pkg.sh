@@ -6,16 +6,17 @@
 #
 # How it works:
 #   1. pkgbuild wraps XT-Forge.app as a component pkg whose payload
-#      lands at /private/tmp/xt-forge-install/ at install time.
+#      installs to /Applications.
 #   2. productbuild wraps the component pkg with a Distribution.xml
 #      that enables user-scope install (enable_currentUserHome=true).
-#   3. macOS Installer.app runs packaging/scripts/postinstall, which
-#      moves the .app into $HOME/Applications, strips the Gatekeeper
-#      quarantine flag, and launches it.
+#      In that mode macOS Installer re-roots /Applications to
+#      $HOME/Applications, so the .app lands in ~/Applications
+#      without an admin password.
+#   3. packaging/scripts/postinstall strips the Gatekeeper quarantine
+#      flag and launches the app.
 #
-# The user experience is: double-click XT-Forge-Installer.pkg →
-# Installer wizard → click Install → app opens automatically. No
-# admin, no Terminal.
+# User experience: double-click XT-Forge-Installer.pkg → Continue →
+# Install → app opens automatically. No admin, no Terminal.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
@@ -29,12 +30,11 @@ if [ ! -d "$APP" ]; then
   exit 1
 fi
 
-# Stage the .app under a per-build temp root so pkgbuild's --root
-# packs exactly one thing at /private/tmp/xt-forge-install/.
+# Stage just the .app so pkgbuild's payload is exactly one item at
+# /Applications/XT-Forge.app when extracted.
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
-mkdir -p "$STAGE/xt-forge-install"
-cp -R "$APP" "$STAGE/xt-forge-install/"
+cp -R "$APP" "$STAGE/"
 
 chmod +x "$SCRIPTS_DIR/postinstall"
 
@@ -43,7 +43,7 @@ rm -f "$COMPONENT" "$DIST_PKG"
 pkgbuild \
   --root "$STAGE" \
   --scripts "$SCRIPTS_DIR" \
-  --install-location /private/tmp \
+  --install-location /Applications \
   --identifier com.xtforge.desktop \
   --version 0.1.0 \
   "$COMPONENT"
@@ -60,5 +60,5 @@ rm -f "$COMPONENT"
 echo "Built: $DIST_PKG"
 echo
 echo "Users install by double-clicking XT-Forge-Installer.pkg. The"
-echo "postinstall script copies the app into ~/Applications, strips"
-echo "quarantine, and launches it automatically. No admin required."
+echo "installer copies the app into ~/Applications, strips quarantine,"
+echo "and launches it automatically. No admin required."
