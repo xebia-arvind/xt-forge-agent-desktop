@@ -1,21 +1,52 @@
 #!/bin/bash
-# postinstall — runs after macOS Installer.app has extracted the payload
-# to /private/tmp/xt-forge-install/. Moves the .app into the current
-# user's ~/Applications, strips the Gatekeeper quarantine flag, and
-# launches it. Runs in user context (see distribution.xml
-# enable_currentUserHome="true") so $HOME is the operator's home dir
-# and no admin password is required.
+# postinstall — runs after macOS Installer.app extracts the payload.
+# Moves the staged .app into the current user's ~/Applications,
+# strips the Gatekeeper quarantine flag, and launches it.
+#
+# The Installer passes these positional args:
+#   $0  script name
+#   $1  full path to the .pkg being installed
+#   $2  installation destination path (with user-scope re-rooting
+#       applied when enable_currentUserHome="true")
+#   $3  installation volume
+#
+# Using $2 for the staged-app path is critical: with user-scope
+# install, absolute paths in --install-location get re-rooted under
+# $HOME, so a hard-coded "/private/tmp/..." wouldn't find the payload.
 set +e
 
-STAGED_APP="/private/tmp/xt-forge-install/XT-Forge.app"
+INSTALL_DEST="$2"
+PAYLOAD_DIR="$INSTALL_DEST/xt-forge-install"
+STAGED_APP="$PAYLOAD_DIR/XT-Forge.app"
+
 DEST_DIR="$HOME/Applications"
 DEST_APP="$DEST_DIR/XT-Forge.app"
+
+# Fallbacks in case $2 isn't what we expect on some macOS variants.
+if [ ! -d "$STAGED_APP" ]; then
+    for candidate in \
+        "$HOME/private/tmp/xt-forge-install/XT-Forge.app" \
+        "/private/tmp/xt-forge-install/XT-Forge.app" \
+        "$HOME/tmp/xt-forge-install/XT-Forge.app"
+    do
+        if [ -d "$candidate" ]; then
+            STAGED_APP="$candidate"
+            PAYLOAD_DIR="$(dirname "$candidate")"
+            break
+        fi
+    done
+fi
+
+if [ ! -d "$STAGED_APP" ]; then
+    echo "[XT-Forge postinstall] ERROR: staged app not found (INSTALL_DEST=$INSTALL_DEST, HOME=$HOME)" >&2
+    exit 1
+fi
 
 mkdir -p "$DEST_DIR"
 
 # Replace any prior install so a fresh installer always wins.
 if [ -d "$DEST_APP" ]; then
-  rm -rf "$DEST_APP"
+    rm -rf "$DEST_APP"
 fi
 
 cp -R "$STAGED_APP" "$DEST_APP"
@@ -25,7 +56,7 @@ cp -R "$STAGED_APP" "$DEST_APP"
 xattr -dr com.apple.quarantine "$DEST_APP" 2>/dev/null
 
 # Clean up the staging directory.
-rm -rf /private/tmp/xt-forge-install
+rm -rf "$PAYLOAD_DIR"
 
 # Launch the freshly-installed app.
 open -n "$DEST_APP"
