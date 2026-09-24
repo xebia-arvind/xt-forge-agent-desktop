@@ -66,9 +66,7 @@ class XTForgeProjectPickerDialog(QDialog):
         )
         for p in self.projects:
             name = str(p.get("projectName") or "(unnamed)")
-            desc = str(p.get("projectDescription") or "").strip()
-            display = f"{name}  —  {desc}" if desc else name
-            item = QListWidgetItem(display)
+            item = QListWidgetItem(name)
             item.setData(Qt.UserRole, p)
             self.list_widget.addItem(item)
         if self.projects:
